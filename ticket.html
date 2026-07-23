@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
+  <title>结单小票 · 幸运星俱乐部</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #fdf6f0 0%, #f5efe8 50%, #faf5f0 100%);
+      font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1.5rem; margin: 0;
+    }
+    .card {
+      max-width: 780px; width: 100%; background: #ffffff; border-radius: 2.5rem;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.08), 0 10px 20px rgba(0,0,0,0.05);
+      padding: 2rem 2rem 2.2rem; transition: all 0.3s ease; border: 1px solid #ede7e0;
+    }
+    h1 { font-size: 1.8rem; font-weight: 650; color: #3b2e24; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+    .subtitle { font-size: 0.9rem; color: #8b7a6b; margin-bottom: 1.5rem; }
+    .section-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.4rem; padding-bottom: 0.9rem; border-bottom: 2px dashed #e8ddd0; }
+    .section-header .section-icon { font-size: 1.8rem; }
+    .section-header .section-title { font-size: 1.2rem; font-weight: 650; color: #3b2e24; }
+    .back-btn {
+      margin-left: auto; background: transparent; border: 1.5px solid #d6c7b8; padding: 0.45rem 1.1rem;
+      border-radius: 2rem; font-size: 0.85rem; color: #5e4e3c; cursor: pointer; transition: 0.2s;
+      display: flex; align-items: center; gap: 0.3rem; text-decoration: none;
+    }
+    .back-btn:hover { background: #ede3d8; border-color: #b39274; }
+    .sub-selector { display: flex; gap: 0.8rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .sub-card {
+      padding: 0.8rem 1.4rem; border-radius: 2rem; text-align: center; cursor: pointer;
+      transition: all 0.25s ease; border: 2px solid #e8ddd0; background: #fdfaf7;
+      font-weight: 550; font-size: 0.9rem; color: #5e4e3c;
+    }
+    .sub-card:hover { border-color: #b39274; background: #fef9f4; }
+    .sub-card.active { border-color: #b39274; background: #f0e2d4; color: #3b2e24; }
+    .form-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+    .form-row { display: flex; flex-wrap: wrap; gap: 1rem; }
+    .form-row .input-group { flex: 1 1 calc(50% - 0.5rem); }
+    .input-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    label { font-size: 0.85rem; font-weight: 550; color: #5e4e3c; }
+    input {
+      width: 100%; padding: 0.8rem 1.1rem; border: 1.5px solid #e0d6cc; border-radius: 1.3rem;
+      font-size: 0.95rem; background: #fcfaf8; transition: all 0.2s; font-family: inherit; color: #2e241a;
+    }
+    input:focus { outline: none; border-color: #b39274; box-shadow: 0 0 0 4px rgba(179,146,116,0.12); background: #ffffff; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.5rem 0 1.5rem; }
+    .btn {
+      background: #f0ebe4; border: none; padding: 0.75rem 1.6rem; border-radius: 2.5rem;
+      font-weight: 550; font-size: 0.9rem; color: #4d3a2c; cursor: pointer; transition: 0.2s;
+      display: inline-flex; align-items: center; gap: 0.3rem; border: 1px solid transparent;
+    }
+    .btn-primary { background: #b39274; color: white; border-color: #b39274; box-shadow: 0 5px 12px rgba(179,146,116,0.3); }
+    .btn-primary:hover { background: #9e7d60; }
+    .btn:hover { background: #e5d9cc; }
+    .output-section { margin-top: 1rem; }
+    .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+    .output-header span { font-weight: 600; color: #3b2e24; font-size: 1rem; }
+    .copy-btn {
+      background: transparent; border: 1px solid #d6c7b8; padding: 0.4rem 1rem; border-radius: 2rem;
+      font-size: 0.8rem; color: #5e4e3c; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;
+    }
+    .copy-btn:hover { background: #ede3d8; }
+    .output-box {
+      background: #faf8f5; border: 1.5px solid #e2d6ca; border-radius: 1.5rem; padding: 1.3rem 1.4rem;
+      font-family: 'SF Mono','Cascadia Code','Consolas',monospace; font-size: 0.9rem; line-height: 1.6;
+      white-space: pre-wrap; word-break: break-word; color: #2e241a; min-height: 150px; max-height: 400px; overflow-y: auto;
+    }
+    .placeholder-note { color: #b9a18b; font-style: italic; }
+    hr { border: 0.5px solid #e3d9ce; margin: 1rem 0 0.6rem; }
+    .footer-note { font-size: 0.7rem; color: #b9a18b; text-align: right; line-height: 1.5; }
+    @media (max-width: 600px) { .card { padding: 1.3rem; } .form-row { flex-direction: column; } .btn { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🧾 结单小票</h1>
+    <div class="subtitle">幸运星俱乐部 · 客服专属工具</div>
+    <div class="section-header">
+      <span class="section-icon">🧾</span><span class="section-title">结单小票</span>
+      <a class="back-btn" href="index.html">↩ 返回首页</a>
+    </div>
+    <div class="sub-selector" id="genderBtns">
+      <div class="sub-card active" onclick="switchGender('female',this)">🎀 女生</div>
+      <div class="sub-card" onclick="switchGender('male',this)">⚡ 男生</div>
+    </div>
+    <div id="formContent"></div>
+    <hr>
+    <div class="footer-note">幸运星俱乐部 · 客服专属工具<br>Github·Kuromimiyi316，盗名必究</div>
+  </div>
+  <script>
+    function formatMoney(raw) { if(!raw||!raw.trim())return'0元'; const t=raw.trim(); if(t.includes('元'))return t; if(/^-?\d+(\.\d+)?$/.test(t))return t+'元'; return t; }
+    function getVal(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+    function setVal(id,v){ const el=document.getElementById(id); if(el)el.value=v; }
+    async function copyOutput(oid){ const el=document.getElementById(oid); if(!el)return; const t=el.textContent||''; if(!t.trim()||el.querySelector('.placeholder-note')){alert('请先生成');return;} try{await navigator.clipboard.writeText(t);}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);} }
+    const fT=`🎀 ·˚⋆𓏴𓏴 𝐗𝐘𝐗 𝐂𝐋𝐔𝐁 𓏴𓏴⋆˚· 🎀\n   ⠀⠀⠀     🎐结算小票\n ‧˚₊꒷꒦︶︶︶︶꒷꒦︶︶︶︶꒦꒷₊˚ ‧\n\n🤍𓏽板宝⌯▹：{boss}\n🧸𓏽陪陪⌯▹：{companion}\n🤍𓏽接待/派单⌯▹：{reception}\n🧸𓏽下单项目⌯▹：{project}\n🤍𓏽交易方式⌯▹：{payment}\n🧸𓏽总金额⌯▹：{total}\n🤍𓏽卡内余额⌯▹：{balance}\n\n✄̶───┈ ⋆交付时间⋆ദ്ദി˶ᕑᗢᓫ)✧\n                     {date}`;
+    const mT=`⚡ ·˚⋆𓏴𓏴 𝐗𝐘𝐗 𝐂𝐋𝐔𝐁 𓏴𓏴⋆˚· ⚡\n   ⠀⠀⠀     🎐结算小票\n ‧˚₊꒷꒦︶︶︶︶꒷꒦︶︶︶︶꒦꒷₊˚ ‧\n\n💙𓏽板宝⌯▹：{boss}\n🎮𓏽陪陪⌯▹：{companion}\n💙𓏽接待/派单⌯▹：{reception}\n🎮𓏽下单项目⌯▹：{project}\n💙𓏽交易方式⌯▹：{payment}\n🎮𓏽总金额⌯▹：{total}\n💙𓏽卡内余额⌯▹：{balance}\n\n✄̶───┈ ⋆交付时间⋆ദ്ദി˶ᕑᗢᓫ)✧\n                     {date}`;
+    function fF(){ return `<div class="form-grid"><div class="form-row"><div class="input-group"><label>🤍 板宝</label><input id="tBoss" placeholder="例如：Kitty"></div><div class="input-group"><label>🧸 陪陪</label><input id="tCompanion" placeholder="例如：小二"></div></div><div class="form-row"><div class="input-group"><label>🤍 接待/派单</label><input id="tReception" placeholder="例如：Mia"></div><div class="input-group"><label>🧸 下单项目</label><input id="tProject" placeholder="例如：PC体验"></div></div><div class="form-row"><div class="input-group"><label>🤍 交易方式</label><input id="tPayment" placeholder="例如：微信/扣卡/支付宝"></div><div class="input-group"><label>🧸 总金额</label><input id="tTotal" placeholder="例如：99"></div></div><div class="form-row"><div class="input-group"><label>🤍 卡内余额</label><input id="tBalance" placeholder="例如：485"></div><div class="input-group"><label>📅 交付时间</label><input id="tDate" placeholder="例如：2026年7月22日"></div></div></div><div class="button-row"><button class="btn btn-primary" onclick="gen('female')">✨ 生成</button><button class="btn" onclick="clearForm()">🧹 清空</button></div><div class="output-section"><div class="output-header"><span>📄 输出</span><button class="copy-btn" onclick="copyOutput('tOutput')">📋 复制</button></div><div class="output-box" id="tOutput"><span class="placeholder-note">尚未生成</span></div></div>`; }
+    function mF(){ return `<div class="form-grid"><div class="form-row"><div class="input-group"><label>💙 板宝</label><input id="tBoss" placeholder="例如：杰哥"></div><div class="input-group"><label>🎮 陪陪</label><input id="tCompanion" placeholder="例如：阿强"></div></div><div class="form-row"><div class="input-group"><label>💙 接待/派单</label><input id="tReception" placeholder="例如：Leo"></div><div class="input-group"><label>🎮 下单项目</label><input id="tProject" placeholder="例如：电竞陪玩"></div></div><div class="form-row"><div class="input-group"><label>💙 交易方式</label><input id="tPayment" placeholder="例如：微信/扣卡/支付宝"></div><div class="input-group"><label>🎮 总金额</label><input id="tTotal" placeholder="例如：128"></div></div><div class="form-row"><div class="input-group"><label>💙 卡内余额</label><input id="tBalance" placeholder="例如：520"></div><div class="input-group"><label>📅 交付时间</label><input id="tDate" placeholder="例如：2026年7月22日"></div></div></div><div class="button-row"><button class="btn btn-primary" onclick="gen('male')">✨ 生成</button><button class="btn" onclick="clearForm()">🧹 清空</button></div><div class="output-section"><div class="output-header"><span>📄 输出</span><button class="copy-btn" onclick="copyOutput('tOutput')">📋 复制</button></div><div class="output-box" id="tOutput"><span class="placeholder-note">尚未生成</span></div></div>`; }
+    let curGen='female';
+    function switchGender(g,btn){ curGen=g; btn.parentElement.querySelectorAll('.sub-card').forEach(c=>c.classList.remove('active')); btn.classList.add('active'); document.getElementById('formContent').innerHTML=g==='female'?fF():mF(); }
+    function gen(g){ const t=g==='female'?fT:mT; document.getElementById('tOutput').textContent=t.replace(/{boss}/g,getVal('tBoss')||'（未填写）').replace(/{companion}/g,getVal('tCompanion')||'（未填写）').replace(/{reception}/g,getVal('tReception')||'（未填写）').replace(/{project}/g,getVal('tProject')||'（未填写）').replace(/{payment}/g,getVal('tPayment')||'（未填写）').replace(/{total}/g,formatMoney(getVal('tTotal'))).replace(/{balance}/g,formatMoney(getVal('tBalance'))).replace(/{date}/g,getVal('tDate')||'（未填写）'); }
+    function clearForm(){ 'tBoss,tCompanion,tReception,tProject,tPayment,tTotal,tBalance,tDate'.split(',').forEach(id=>setVal(id,'')); document.getElementById('tOutput').innerHTML='<span class="placeholder-note">尚未生成</span>'; }
+    document.getElementById('formContent').innerHTML=fF();
+  </script>
+</body>
+</html>

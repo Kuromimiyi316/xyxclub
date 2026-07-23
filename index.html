@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
+  <title>幸运星俱乐部 · 客服专属工具</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #fdf6f0 0%, #f5efe8 50%, #faf5f0 100%);
+      font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1.5rem; margin: 0;
+    }
+    .card {
+      max-width: 700px; width: 100%; background: #ffffff; border-radius: 2.5rem;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.08), 0 10px 20px rgba(0,0,0,0.05);
+      padding: 2.5rem 2rem 2rem; transition: all 0.3s ease; border: 1px solid #ede7e0; text-align: center;
+    }
+    h1 { font-size: 2rem; font-weight: 650; color: #3b2e24; margin-bottom: 0.3rem; }
+    .subtitle { font-size: 0.95rem; color: #8b7a6b; margin-bottom: 2.5rem; }
+    .nav-grid { display: flex; flex-direction: column; gap: 1rem; }
+    .nav-card {
+      display: flex; align-items: center; gap: 1.2rem; padding: 1.3rem 1.8rem; border-radius: 1.8rem;
+      text-decoration: none; transition: all 0.3s ease; border: 2.5px solid #e8ddd0; background: #fdfaf7; cursor: pointer;
+    }
+    .nav-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: #b39274; }
+    .nav-icon { font-size: 2.5rem; flex-shrink: 0; }
+    .nav-info { text-align: left; }
+    .nav-name { font-size: 1.2rem; font-weight: 650; color: #3b2e24; }
+    .nav-desc { font-size: 0.85rem; color: #8b7a6b; margin-top: 0.2rem; }
+    .nav-arrow { margin-left: auto; font-size: 1.5rem; color: #c8b299; }
+    hr { border: 0.5px solid #e3d9ce; margin: 2rem 0 1rem; }
+    .footer-note { font-size: 0.7rem; color: #b9a18b; line-height: 1.5; }
+    @media (max-width: 500px) {
+      .card { padding: 1.5rem; }
+      .nav-card { padding: 1rem 1.2rem; }
+      .nav-icon { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>⭐ 幸运星俱乐部</h1>
+    <div class="subtitle">客服专属工具 · 请选择创建类型</div>
+    <div class="nav-grid">
+      <a class="nav-card" href="ticket.html">
+        <span class="nav-icon">🧾</span>
+        <div class="nav-info"><div class="nav-name">结单小票</div><div class="nav-desc">生成消费结单小票（女生/男生）</div></div>
+        <span class="nav-arrow">›</span>
+      </a>
+      <a class="nav-card" href="deposit.html">
+        <span class="nav-icon">💾</span>
+        <div class="nav-info"><div class="nav-name">存单</div><div class="nav-desc">排面 · 存单小票</div></div>
+        <span class="nav-arrow">›</span>
+      </a>
+      <a class="nav-card" href="recharge.html">
+        <span class="nav-icon">💎</span>
+        <div class="nav-info"><div class="nav-name">充值</div><div class="nav-desc">小幽灵 · 蝴蝶 · 黄油小熊 · 库洛米</div></div>
+        <span class="nav-arrow">›</span>
+      </a>
+      <a class="nav-card" href="birthday.html">
+        <span class="nav-icon">🎂</span>
+        <div class="nav-info"><div class="nav-name">生日</div><div class="nav-desc">女宝 · 男宝</div></div>
+        <span class="nav-arrow">›</span>
+      </a>
+      <a class="nav-card" href="thanks.html">
+        <span class="nav-icon">🎁</span>
+        <div class="nav-info"><div class="nav-name">谢礼</div><div class="nav-desc">感谢老板大气送礼</div></div>
+        <span class="nav-arrow">›</span>
+      </a>
+    </div>
+    <hr>
+    <div class="footer-note">
+      幸运星俱乐部 · 客服专属工具<br>
+      Github·Kuromimiyi316，盗名必究
+    </div>
+  </div>
+</body>
+</html>
