@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
+  <title>结单小票 · 自动生成工具</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #f5f3f0;
+      font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+      margin: 0;
+    }
+    .card {
+      max-width: 780px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.08), 0 10px 20px rgba(0, 0, 0, 0.05);
+      padding: 2rem 2rem 2.2rem;
+      transition: all 0.2s ease;
+      border: 1px solid #ede7e0;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #3b2e24;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem; /* 增加标题与副标题之间的间距 */
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      color: #8b7a6b;
+      margin-bottom: 2rem;
+      border-left: 4px solid #c8b299;
+      padding-left: 1rem;
+      font-weight: 400;
+      margin-top: 0.2rem; /* 额外增加顶部间距 */
+    }
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+    .form-row .input-group {
+      flex: 1 1 calc(50% - 0.6rem);
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    label {
+      font-size: 0.9rem;
+      font-weight: 550;
+      color: #5e4e3c;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    label i {
+      font-style: normal;
+      font-size: 1rem;
+      color: #b39274;
+    }
+    input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border: 1.5px solid #e0d6cc;
+      border-radius: 1.4rem;
+      font-size: 1rem;
+      background: #fcfaf8;
+      transition: all 0.2s;
+      font-family: inherit;
+      color: #2e241a;
+    }
+    input:focus {
+      outline: none;
+      border-color: #b39274;
+      box-shadow: 0 0 0 4px rgba(179, 146, 116, 0.15);
+      background: #ffffff;
+    }
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 0.8rem 0 1.8rem;
+    }
+    .btn {
+      background: #f0ebe4;
+      border: none;
+      padding: 0.8rem 1.8rem;
+      border-radius: 2.5rem;
+      font-weight: 550;
+      font-size: 0.95rem;
+      color: #4d3a2c;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      background: #f1eae2;
+      border: 1px solid transparent;
+      letter-spacing: 0.3px;
+    }
+    .btn-primary {
+      background: #b39274;
+      color: white;
+      border-color: #b39274;
+      box-shadow: 0 5px 12px rgba(179, 146, 116, 0.3);
+    }
+    .btn-primary:hover {
+      background: #9e7d60;
+      border-color: #9e7d60;
+    }
+    .btn:hover {
+      background: #e5d9cc;
+      border-color: #c8b299;
+    }
+    .btn-primary:hover {
+      background: #9e7d60;
+    }
+    .output-section {
+      margin-top: 1.2rem;
+    }
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .output-header span {
+      font-weight: 600;
+      color: #3b2e24;
+      font-size: 1.1rem;
+    }
+    .copy-btn {
+      background: transparent;
+      border: 1px solid #d6c7b8;
+      padding: 0.45rem 1.2rem;
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      color: #5e4e3c;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: #fdfbf9;
+    }
+    .copy-btn:hover {
+      background: #ede3d8;
+      border-color: #b39274;
+    }
+    .output-box {
+      background: #faf8f5;
+      border: 1.5px solid #e2d6ca;
+      border-radius: 1.5rem;
+      padding: 1.4rem 1.5rem;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', 'Menlo', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #2e241a;
+      min-height: 200px;
+      max-height: 420px;
+      overflow-y: auto;
+      background: #fffdf9;
+    }
+    .placeholder-note {
+      color: #b9a18b;
+      font-style: italic;
+    }
+    .toast-message {
+      font-size: 0.8rem;
+      color: #7b6e5d;
+      margin-left: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.25s;
+      font-weight: 500;
+    }
+    .toast-message.show {
+      opacity: 1;
+    }
+    hr {
+      border: 0.5px solid #e3d9ce;
+      margin: 1.2rem 0 0.8rem;
+    }
+    @media (max-width: 550px) {
+      .card {
+        padding: 1.5rem;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+      .form-row .input-group {
+        flex: 1 1 100%;
+      }
+      .button-row {
+        flex-direction: column;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>
+      <span>🧾</span> 结单小票
+    </h1>
+    <div class="subtitle">
+      幸运星俱乐部·Kitty专属
+    </div>
+
+    <!-- 输入区域：字段顺序与模板一致 -->
+    <div class="form-grid">
+      <div class="form-row">
+        <div class="input-group">
+          <label><span>🤍</span> 板宝</label>
+          <input type="text" id="inputBoss" placeholder="例如：Kitty" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <label><span>🧸</span> 陪陪</label>
+          <input type="text" id="inputCompanion" placeholder="例如：小二" autocomplete="off">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label><span>🤍</span> 接待/派单</label>
+          <input type="text" id="inputReception" placeholder="例如：Mia" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <label><span>🧸</span> 下单项目</label>
+          <input type="text" id="inputProject" placeholder="例如：PC体验" autocomplete="off">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label><span>🤍</span> 交易方式</label>
+          <input type="text" id="inputPayment" placeholder="例如：微信/扣卡/支付宝" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <label><span>🧸</span> 总金额</label>
+          <input type="text" id="inputTotal" placeholder="例如：99" autocomplete="off">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label><span>🤍</span> 卡内余额</label>
+          <input type="text" id="inputBalance" placeholder="例如：485" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <label><span>📅</span> 交付时间</label>
+          <input type="text" id="inputDate" placeholder="例如：2026年7月22日" autocomplete="off">
+        </div>
+      </div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="button-row">
+      <button class="btn btn-primary" id="generateBtn">✨ 生成小票</button>
+      <button class="btn" id="clearBtn">🧹 清空内容</button>
+    </div>
+
+    <!-- 输出区域 -->
+    <div class="output-section">
+      <div class="output-header">
+        <span>📄 结单小票 · 纯文本</span>
+        <button class="copy-btn" id="copyBtn">
+          <span>📋</span> 复制
+        </button>
+        <span class="toast-message" id="toastMsg">已复制到剪贴板</span>
+      </div>
+      <div class="output-box" id="outputText">
+        <span class="placeholder-note">尚未生成小票，请填写信息后点击“生成小票”</span>
+      </div>
+    </div>
+    <hr>
+    <div style="font-size:0.8rem; color:#aa9b8c; text-align: right;">
+      结单小票 · 自动生成工具
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // 获取所有输入框元素
+      const inputBoss = document.getElementById('inputBoss');
+      const inputCompanion = document.getElementById('inputCompanion');
+      const inputReception = document.getElementById('inputReception');
+      const inputProject = document.getElementById('inputProject');
+      const inputPayment = document.getElementById('inputPayment');
+      const inputTotal = document.getElementById('inputTotal');
+      const inputBalance = document.getElementById('inputBalance');
+      const inputDate = document.getElementById('inputDate');
+      
+      const generateBtn = document.getElementById('generateBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const outputText = document.getElementById('outputText');
+      const toastMsg = document.getElementById('toastMsg');
+
+      // ---------- 小票模板 ----------
+      const ticketTemplate = `🎀 ·˚⋆𓏴𓏴 𝐗𝐘𝐗 𝐂𝐋𝐔𝐁 𓏴𓏴⋆˚· 🎀
+   ⠀⠀⠀     🎐结算小票
+ ‧˚₊꒷꒦︶︶︶︶꒷꒦︶︶︶︶꒦꒷₊˚ ‧
+
+🤍𓏽板宝⌯▹：{boss}
+🧸𓏽陪陪⌯▹：{companion}
+🤍𓏽接待/派单⌯▹：{reception}
+🧸𓏽下单项目⌯▹：{project}
+🤍𓏽交易方式⌯▹：{payment}
+🧸𓏽总金额⌯▹：{total}
+🤍𓏽卡内余额⌯▹：{balance}
+
+✄̶───┈ ⋆交付时间⋆ദ്ദി˶ᕑᗢᓫ)✧
+                     {date}`;
+
+      /**
+       * 智能金额处理：自动添加“元”单位
+       */
+      function formatMoneyWithUnit(rawValue) {
+        if (!rawValue || rawValue.trim() === '') {
+          return '0元';
+        }
+        
+        const trimmed = rawValue.trim();
+        
+        // 如果已经包含“元”字，直接返回
+        if (trimmed.includes('元')) {
+          return trimmed;
+        }
+        
+        // 检查是否为纯数字（包括小数）
+        const numberPattern = /^-?\d+(\.\d+)?$/;
+        if (numberPattern.test(trimmed)) {
+          return trimmed + '元';
+        }
+        
+        // 其他情况保留原样
+        return trimmed;
+      }
+
+      /**
+       * 获取所有输入值（去除首尾空格）
+       */
+      function getInputValues() {
+        return {
+          boss: inputBoss.value.trim(),
+          companion: inputCompanion.value.trim(),
+          reception: inputReception.value.trim(),
+          project: inputProject.value.trim(),
+          payment: inputPayment.value.trim(),
+          total: inputTotal.value.trim(),
+          balance: inputBalance.value.trim(),
+          date: inputDate.value.trim()
+        };
+      }
+
+      /**
+       * 填充模板
+       */
+      function fillTicket(values) {
+        const boss = values.boss || '（未填写）';
+        const companion = values.companion || '（未填写）';
+        const reception = values.reception || '（未填写）';
+        const project = values.project || '（未填写）';
+        const payment = values.payment || '（未填写）';
+        const total = formatMoneyWithUnit(values.total);
+        const balance = formatMoneyWithUnit(values.balance);
+        const date = values.date || '（未填写）';
+
+        return ticketTemplate
+          .replace(/{boss}/g, boss)
+          .replace(/{companion}/g, companion)
+          .replace(/{reception}/g, reception)
+          .replace(/{project}/g, project)
+          .replace(/{payment}/g, payment)
+          .replace(/{total}/g, total)
+          .replace(/{balance}/g, balance)
+          .replace(/{date}/g, date);
+      }
+
+      /**
+       * 更新输出区域
+       */
+      function updateOutput() {
+        const values = getInputValues();
+        const allEmpty = Object.values(values).every(v => !v);
+        if (allEmpty) {
+          outputText.innerHTML = `<span class="placeholder-note">请至少填写一项信息，再生成小票</span>`;
+          return;
+        }
+        const filledTicket = fillTicket(values);
+        outputText.textContent = filledTicket;
+      }
+
+      // 生成按钮点击
+      generateBtn.addEventListener('click', () => {
+        updateOutput();
+        outputText.style.transition = '0.15s';
+        outputText.style.backgroundColor = '#fefaf5';
+        setTimeout(() => {
+          outputText.style.backgroundColor = '#fffdf9';
+        }, 150);
+      });
+
+      // 清空按钮
+      clearBtn.addEventListener('click', () => {
+        inputBoss.value = '';
+        inputCompanion.value = '';
+        inputReception.value = '';
+        inputProject.value = '';
+        inputPayment.value = '';
+        inputTotal.value = '';
+        inputBalance.value = '';
+        inputDate.value = '';
+        outputText.innerHTML = `<span class="placeholder-note">尚未生成小票，请填写信息后点击“生成小票”</span>`;
+        toastMsg.classList.remove('show');
+        inputBoss.focus();
+      });
+
+      // 复制功能
+      copyBtn.addEventListener('click', async () => {
+        const textToCopy = outputText.textContent || '';
+        if (!textToCopy.trim() || outputText.querySelector('.placeholder-note')) {
+          toastMsg.textContent = '请先生成小票再复制';
+          toastMsg.classList.add('show');
+          setTimeout(() => {
+            toastMsg.classList.remove('show');
+          }, 2000);
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          toastMsg.textContent = '✅ 已复制到剪贴板';
+          toastMsg.classList.add('show');
+          setTimeout(() => {
+            toastMsg.classList.remove('show');
+          }, 2000);
+        } catch (err) {
+          try {
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            toastMsg.textContent = '✅ 已复制 (兼容模式)';
+            toastMsg.classList.add('show');
+            setTimeout(() => {
+              toastMsg.classList.remove('show');
+            }, 2000);
+          } catch (fallbackErr) {
+            toastMsg.textContent = '❌ 复制失败，请手动选择';
+            toastMsg.classList.add('show');
+            setTimeout(() => {
+              toastMsg.classList.remove('show');
+            }, 2500);
+          }
+        }
+      });
+
+      // 回车键触发生成
+      const allInputs = [
+        inputBoss, inputCompanion, inputReception, inputProject,
+        inputPayment, inputTotal, inputBalance, inputDate
+      ];
+      allInputs.forEach(input => {
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            generateBtn.click();
+          }
+        });
+      });
+
+      console.log('结单小票工具已启动。幸运星俱乐部·Kitty专属');
+    })();
+  </script>
+</body>
+</html>
