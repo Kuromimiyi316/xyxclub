@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
+  <title>充值 · 幸运星俱乐部</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: linear-gradient(135deg,#fdf6f0 0%,#f5efe8 50%,#faf5f0 100%); font-family: system-ui,'Segoe UI',Roboto,'Helvetica Neue','Noto Sans','PingFang SC','Microsoft YaHei',sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1.5rem; margin: 0; }
+    .card { max-width: 780px; width: 100%; background: #fff; border-radius: 2.5rem; box-shadow: 0 25px 45px rgba(0,0,0,0.08); padding: 2rem 2rem 2.2rem; border: 1px solid #ede7e0; }
+    h1 { font-size: 1.8rem; font-weight: 650; color: #3b2e24; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+    .subtitle { font-size: 0.9rem; color: #8b7a6b; margin-bottom: 1.5rem; }
+    .section-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.4rem; padding-bottom: 0.9rem; border-bottom: 2px dashed #e8ddd0; }
+    .section-header .section-icon { font-size: 1.8rem; }
+    .section-header .section-title { font-size: 1.2rem; font-weight: 650; color: #3b2e24; }
+    .back-btn { margin-left: auto; background: transparent; border: 1.5px solid #d6c7b8; padding: 0.45rem 1.1rem; border-radius: 2rem; font-size: 0.85rem; color: #5e4e3c; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; }
+    .back-btn:hover { background: #ede3d8; border-color: #b39274; }
+    .sub-selector { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .sub-card { padding: 0.6rem 1rem; border-radius: 2rem; text-align: center; cursor: pointer; transition: all 0.25s; border: 2px solid #e8ddd0; background: #fdfaf7; font-weight: 550; font-size: 0.82rem; color: #5e4e3c; }
+    .sub-card:hover { border-color: #b39274; background: #fef9f4; }
+    .sub-card.active { border-color: #b39274; background: #f0e2d4; color: #3b2e24; }
+    .form-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+    .input-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    label { font-size: 0.85rem; font-weight: 550; color: #5e4e3c; }
+    input { width: 100%; padding: 0.8rem 1.1rem; border: 1.5px solid #e0d6cc; border-radius: 1.3rem; font-size: 0.95rem; background: #fcfaf8; color: #2e241a; }
+    input:focus { outline: none; border-color: #b39274; box-shadow: 0 0 0 4px rgba(179,146,116,0.12); background: #fff; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.5rem 0 1.5rem; }
+    .btn { background: #f0ebe4; border: none; padding: 0.75rem 1.6rem; border-radius: 2.5rem; font-weight: 550; font-size: 0.9rem; color: #4d3a2c; cursor: pointer; }
+    .btn-primary { background: #b39274; color: white; }
+    .btn-primary:hover { background: #9e7d60; }
+    .btn:hover { background: #e5d9cc; }
+    .output-box { background: #faf8f5; border: 1.5px solid #e2d6ca; border-radius: 1.5rem; padding: 1.3rem 1.4rem; font-family: 'SF Mono','Cascadia Code',monospace; font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; color: #2e241a; min-height: 150px; max-height: 400px; overflow-y: auto; }
+    .placeholder-note { color: #b9a18b; font-style: italic; }
+    .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+    .output-header span { font-weight: 600; color: #3b2e24; }
+    .copy-btn { background: transparent; border: 1px solid #d6c7b8; padding: 0.4rem 1rem; border-radius: 2rem; font-size: 0.8rem; color: #5e4e3c; cursor: pointer; }
+    .copy-btn:hover { background: #ede3d8; }
+    hr { border: 0.5px solid #e3d9ce; margin: 1rem 0 0.6rem; }
+    .footer-note { font-size: 0.7rem; color: #b9a18b; text-align: right; line-height: 1.5; }
+    @media (max-width:600px){ .card{padding:1.3rem} .btn{width:100%} }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>💎 充值</h1>
+    <div class="subtitle">幸运星俱乐部 · 客服专属工具</div>
+    <div class="section-header"><span class="section-icon" id="secIcon">👻</span><span class="section-title" id="secTitle">充值 · 小幽灵款</span><a class="back-btn" href="index.html">↩ 返回首页</a></div>
+    <div class="sub-selector" id="subBtns">
+      <div class="sub-card active" data-sub="ghost" onclick="switchSub('ghost',this)">👻 小幽灵</div>
+      <div class="sub-card" data-sub="butterfly" onclick="switchSub('butterfly',this)">🦋 蝴蝶</div>
+      <div class="sub-card" data-sub="bear" onclick="switchSub('bear',this)">🧸 黄油小熊</div>
+      <div class="sub-card" data-sub="kuromi" onclick="switchSub('kuromi',this)">💜 库洛米</div>
+    </div>
+    <div id="formContent"></div>
+    <hr>
+    <div class="footer-note">幸运星俱乐部 · 客服专属工具<br>Github·Kuromimiyi316，盗名必究</div>
+  </div>
+  <script>
+    // 当前选中的类型
+    let currentType = 'ghost';
+
+    function getVal(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+    function setVal(id,v){ const el=document.getElementById(id); if(el)el.value=v; }
+    function formatMoney(raw){ if(!raw||!raw.trim())return'0元'; const t=raw.trim(); if(t.includes('元'))return t; if(/^-?\d+(\.\d+)?$/.test(t))return t+'元'; return t; }
+    function formatNoUnit(raw){ if(!raw||!raw.trim())return'0'; return raw.trim(); }
+    async function copyOutput(oid){ const el=document.getElementById(oid); if(!el)return; const t=el.textContent||''; if(!t.trim()||el.querySelector('.placeholder-note')){alert('请先生成');return;} try{await navigator.clipboard.writeText(t);}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);} }
+
+    // 生成表单HTML
+    function getFormHTML(label1, label2) {
+      return `<div class="form-grid"><div class="input-group"><label>${label1}</label><input id="rBoss" placeholder="自定义1"></div><div class="input-group"><label>${label2}</label><input id="rAmount" placeholder="自定义2"></div></div><div class="button-row"><button class="btn btn-primary" onclick="gen()">✨ 生成</button><button class="btn" onclick="clearF()">🧹 清空</button></div><div class="output-section"><div class="output-header"><span>📄 输出</span><button class="copy-btn" onclick="copyOutput('rOutput')">📋 复制</button></div><div class="output-box" id="rOutput"><span class="placeholder-note">尚未生成</span></div></div>`;
+    }
+
+    // 生成输出内容
+    function gen(){
+      const boss = getVal('rBoss') || '老板';
+      let amt;
+      let t = '';
+
+      if (currentType === 'ghost') {
+        amt = formatNoUnit(getVal('rAmount'));
+        t = ` 💗˗ˋˏ感谢${boss}宝宝大气预存ˎˊ˗💗\n    ┆       充值金额 : ${amt} 𝑹𝑴𝑩     ┆\n︶̩͙ ̩͙︶︶̩͙ ̩͙︶︶̩͙ ̩͙︶︶̩͙ ̩͙︶︶̩͙̩͙︶︶̩͙ ̩͙︶︶̩͙ ̩͙︶︶̩͙ ̩͙\n⠀      ⠀⣀⠤⣀⠀⣀⣠⣤⣄⣀⡀⠀⠀⠀⠀⠀⠀\n⢀⡠⠤⠼⠀⢀⡼⠋⠁⠀⠀⠀⠀⠉⠓⣄⠀⠀⠀⠀\n⢸⠀⠀⠀⢠⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⢠⠴⠢宝\n⠈⠒⠤⡤⡞⠀⠀⠀⠀⢦⡀⠀⠀⢀⡤⠀⢸⣬⣖⡁宝\n⠀⠀⠀⢳⠇⠀⠀⠤⠐⠋⠁⠐⠒⠈⠙⢂⡄⠀⢀⡇大\n⠀⠀⣠⠎⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡏⠉   气\n⠀⠀⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇      投\n⠀⠀⠀⠉⠛⢦⡀⠀⢀⡀⠀⠀⢀⣄⣀⣀⡼⠁⠀  喂\n⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠓⠚⠉           ┆ 💸 ┆\n┈·̩͙ ೀ˚𝐻𝑒𝑎𝑟𝑡 𝑏𝑜𝑜𝑘𝑖𝑛𝑔  ̩͙┈╭ ◜◝  ͡  ◜◝ ╮\n💞"风声藏匿思念.      ( ʚ幸运星电竞ɞ )\n        𝓡𝓸𝓈𝓮𝓈 𝒽𝒾𝒹𝓮 𝓁𝓸𝓋𝓮 Ⅱ 玫瑰藏匿爱意"\n︶︶✿*•̩̩͙✩•̩̩͙*˚︵‿🎀‿︵˚*•̩̩͙✩•̩̩͙*✿︶︶`;
+      } else if (currentType === 'butterfly') {
+        amt = formatMoney(getVal('rAmount'));
+        t = `   #   做你短暂的蝴蝶    ‖    📘\n❥ ❥       #    用我的刹那亲吻你\n\n⪩⑅̥̩̥͙⪨ ⌯ ※ ⌯ ➿ 🦋 ➿ ⌯ ※ ⌯ ⪩⑅̥̩̥͙⪨\n༝˖.₊.˖༝ ${boss} 大气充值 ༝˖.₊.˖༝\n 本次充值价值：${amt} ︾  ︾  ︾\n ˟  ︶  ˟ 📘 ˟  ︶  ˟  ︶  ˟ 📘 ˟  ︶  ˟\n             ┊                       ┊\n⠀⠀⠀ ⠀🤍⠀⠀⢠⣶⠀⠀     🦋       🎧\n🎧⠀⠀ ⠀⠀⠀⠀⣼⠜⡷⡀⠀⠀⠀⠀⠀   ┊\n┊  ⠀⠀⢄⡀⠀⠀⣿⠒⡴⣿⡄⠀⠀⠀⠀  🤍\n🎶⠀⠀ ⠀⠻⣶⣤⣸⠀⣿⣀⣇⠀⠀  ⠀༝˖.₊.˖༝\n⠀⠀  爱     ⠈⠻⣯⡔⣘⢋⣞⣛⢦⣀⠀⠀⠀ \n⠀⠀  如  ⠀⠀⡰⠊⢽⣞⠿⣖⡼⠟⠛⠍⠑⠲⠤  \n⠀⠀  雨⠀⠀  ⠀⠀⠀⠈⠙⠣⠄⠀           窗\n⠀⠀  中⠀⠀  ⠀⠀⠀⠀耽⠀⠀ 🤍       台\n⠀⠀⠀⠀⠀⠀⠀⡄⠀⠀  溺⠀     ┊         的\n⢺⡲⢤⡀⠀⠀⢰⡇⠀  ⠀的       🦋     蝶\n⠘⡇⢬⠘⢦⡀⣿⡇⠀⠀  蝶⠀    ┊     🤍\n⠀⢻⠚⢢⠄⢱⣿⢃⠄⠂⠀⠐⠀⠀ 🎧     ┊\n⠀⠀⠑⣈⣛⣠⣿⠇⠂⠐⠀⠀⠀⠀⠀⠀⠀  🦋\n⠀⠀⣞⡕⢕⢟⡇   💙   ‖    ${boss} 专 属\n⠀⢀⡿⠚⠁⠹⠀ᐢ:;;;:ᐢ    ᐢ:;;;:ᐢ⠀ ᐢ:;;;:ᐢ \n⠰⠋迷途未远 循蝴蝶之踪可抵春\n ⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣⌣\n❥ ❥ ❥XYX CLUB`;
+      } else if (currentType === 'bear') {
+        amt = formatNoUnit(getVal('rAmount'));
+        t = `*⑅︎୨୧┈︎┈︎┈︎充值播报┈┈︎┈︎୨୧⑅︎*\n               ᖰ˃𝓧𝓨𝓧 ·𝐂𝐋𝐔𝐁 ˂̶ᖳ\n如果你是晴天 那你就是我的幸运\n      🥨               ⊹̩͙               🥨\n  (˶> ᎑ <˶)◞${boss}小宝大气充值        \n            \n            ʢ> ${amt}𝑹𝑴𝑩 <ʡ\n         \n⠀⠀⢀⡴⠛⠉⠉⠙⣶⣠⠤⡤⣄⣴⠋⠉⠉⠛⢦⡀\n⠀⠀⢸⠃⠀⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠚⠀⠘⡇\n⠀⠀⠘⡷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢾⠃\n⠀⠀⢸⠁⠀⠀⠀⠀⠀⢠⢀⡀⡄⠀⠀⠀⠀⠀⠈⡇\n⠀⠀⢹⡀⡴⠒⠛⠲⡄⠀⠘⠃⠀⢠⠖⠛⠒⢦⣀⡏\n ⢰⡛⠛⠷⢤⣤⣴⠛⠛⠋⠙⡛⠛⠦⡤⡤⠼⠛⠛⡆\n⠀⢸⡆⠀⢸⡏⠹⡝⣽⠏⣹⡏⣯⡏⣽⡇⠀⠀⢰⡇\n⡾⢋⢙⡓⢮⡓⠒⠒⠒⠒⠒⠒⠒⠒⢛⡵⢚⡋⡙⢳\n ⢸⡒⢨⣶⠀⠀⣷⠀⠀⠀⠀⠀⠀⠀⣼⠁⠀⣶⡅⢒\n⠀⠳⣄⡀⣀⣠⠟⠀⠀⠀⠀⠀⠀⠀⠻⣄⣀⢀⣠⡞\n⠀⠀⠈⠻⣭⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣩⠟⠁\n⠀⠀⠀⠀⠈⠉⠛⠒⠶⠶⠶⠶⠶⠶⠒⠛⠉⠁⠀   最大的幸福 你和我Z☡zᶻ\n    🥞꒳ᵒ꒳ᵎᵎᵎ 🥞꒳ᵒ꒳ᵎᵎᵎ 🥞꒳ᵒ꒳ᵎᵎᵎ 🥞\n      请你吃黄油千层小蛋糕🍰🥂`;
+      } else if (currentType === 'kuromi') {
+        amt = formatNoUnit(getVal('rAmount'));
+        t = `  ☂️ ₊˟ 𓏽  ⌗ XYX 𝐂𝐥𝐮𝐛 ⌗ 𓏽 ˟₊ ☂️\n                ⎓ ⎓         ⎓ ⎓\n🦄 ${boss} 大气充值 ${amt} 𝐑 🦄\n     𓏽 𓏵 𓏽┆ ⌯  ˟ ˖ 𓊔 ˖ ˟  ⌯ ┆𓏽 𓏵 𓏽\n     ◌ ⊹︵⏜︵⁐◌🔮◌⁐︵⏜︵⊹ ◌\n        ⢀⡶⠶⢦⣤⡀⢸⡇ ⣀⣤⡶⠶⢦⡀   \n       ⠀⢺⡁⠀⠀⣈⣹⢸⡇⣋⣁⠀⠀⢘⡧    \n      ⠀⠘⣧⣀⣀⣤⣽⢸⡇⣯⣄⣀⣀⣼⠃⠀ \n         ⠀   ⠀⠉⠉⠁⢸⡇⠈⠉⠉           \n        ⠀ ⠀⢀⣜⣉⢱⢸⡇⡎⣉⣡⡀⠀⠀⠀ \n     ⠀ ⢠⣦⣈⣼⣿⠿⠛⠛⠿⣿⣧⣁⡐⡆⠀ \n⠀ ⠠⣎⡩⣿⣳⣄⠀⣠⣤⡀⢀⣀⠀⠈⠛⢌⣱⠄⠀\n ⢀⢬⠟⠀⣿⣿⣿⣿⡿⠛⣷⡿⢿⡇⢀⣤⣬⣽⣽⡷\n ⢘⡟⠀⠀⢿⣿⣿⣿⣇⣠⣿⡄⣘⣵⢿⣿⣿⣿⣿⡣\n ⣿⡇⠀⠀⣶⣿⣿⣿⢾⣿⣿⣶⣽⣿⣿⣧⣿⡿⢹⣿\n ⡟⡇⠀⠀⣿⣿⣿⠟⢿⣿⣿⠿⠻⣿⣿⣿⡇⠀⢸⢿\n ⠸⣳⡀⠀⢿⡗⢰⣦⠀⡀⠀⢠⣶⢻⣿⡿⠀⠀⣾⠇\n⠀ ⠻⣳⡀⠀⠙⣦⠠⣄⣉⣀⣀⣀⡼⠟⠁⢀⣞⡟⠀\n⠀ ⠀⠘⢻⣦⣀⢻⣡⣿⣿⣿⢤⠾⠧⣠⣴⡏⠃\n⠀ ⠀⠀⠀⠈⠚⠿⢟⣻⣿⣿⣗⡻⠿⠓⠁\n         ${boss}专属库洛米徽章ᵎᵎ\n💜 . ₊ ‿‿ •. ‿‿‿‿.•   ‿‿ ₊ . 💜\n   ๑  « · ⟡ »  ┄  🦄  ┄ « ⟡ · »  ๑`;
+      }
+      document.getElementById('rOutput').textContent = t;
+    }
+
+    function clearF(){ setVal('rBoss',''); setVal('rAmount',''); document.getElementById('rOutput').innerHTML='<span class="placeholder-note">尚未生成</span>'; }
+
+    // 配置信息
+    const config = {
+      ghost: {icon:'👻', title:'充值 · 小幽灵款', label1:'💗 老板姓名', label2:'💰 充值金额（不含单位）'},
+      butterfly: {icon:'🦋', title:'充值 · 蝴蝶款', label1:'🦋 老板姓名', label2:'💰 充值金额'},
+      bear: {icon:'🧸', title:'充值 · 黄油小熊款', label1:'🧸 老板姓名', label2:'💰 充值金额（不含单位）'},
+      kuromi: {icon:'💜', title:'充值 · 库洛米款', label1:'💜 老板姓名', label2:'💰 充值金额（不含单位）'}
+    };
+
+    function switchSub(sub, btn){
+      currentType = sub;
+      document.querySelectorAll('#subBtns .sub-card').forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active');
+      const c = config[sub];
+      document.getElementById('secIcon').textContent = c.icon;
+      document.getElementById('secTitle').textContent = c.title;
+      document.getElementById('formContent').innerHTML = getFormHTML(c.label1, c.label2);
+    }
+
+    // 初始化
+    document.getElementById('formContent').innerHTML = getFormHTML('💗 老板姓名', '💰 充值金额（不含单位）');
+  </script>
+</body>
+</html>
