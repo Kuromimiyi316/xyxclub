@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.2, user-scalable=yes, viewport-fit=cover">
+  <title>签证材料审核 · 日本</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #e5e5e5;
+      font-family: 'Inter', 'Segoe UI', 'Noto Serif SC', 'Microsoft YaHei', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .system-container {
+      width: 100%;
+      max-width: 850px;
+      background: #ffffff;
+      border-radius: 32px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      padding: 24px 18px 30px;
+      border: 1px solid #e5e5e5;
+    }
+    @media (min-width: 600px) {
+      .system-container {
+        padding: 32px 28px 38px;
+        border-radius: 40px;
+      }
+    }
+    .nav-screen,
+    .visa-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .nav-header {
+      text-align: center;
+      width: 100%;
+    }
+    .main-title {
+      font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      font-size: 2.4rem;
+      letter-spacing: 6px;
+      color: #000000;
+      margin-bottom: 6px;
+      display: inline-block;
+      padding-bottom: 8px;
+      position: relative;
+    }
+    .main-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 3px;
+      background: #ee540e;
+      border-radius: 2px;
+    }
+    @media (min-width: 500px) {
+      .main-title {
+        font-size: 3rem;
+        letter-spacing: 8px;
+      }
+    }
+    .sub-title {
+      font-size: 1.8rem;
+      color: #000000;
+      letter-spacing: 8px;
+      margin: 10px 0 16px;
+      font-weight: 300;
+      opacity: 0.7;
+    }
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      width: 100%;
+      margin-top: 6px;
+    }
+    .visa-card {
+      flex: 1 1 120px;
+      min-width: 110px;
+      background: #ffffff;
+      border: 2px solid #e5e5e5;
+      border-radius: 24px;
+      padding: 24px 12px 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+    .visa-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #e5e5e5;
+      transition: background 0.25s;
+    }
+    @media (min-width: 500px) {
+      .visa-card {
+        flex: 1 1 150px;
+        padding: 32px 16px 22px;
+      }
+    }
+    .visa-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 24px rgba(238, 84, 14, 0.12);
+      border-color: #ee540e;
+    }
+    .visa-card:hover::before {
+      background: #ee540e;
+    }
+    .card-icon {
+      font-size: 2.2rem;
+      margin-bottom: 6px;
+    }
+    .card-title {
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: #000000;
+      letter-spacing: 2px;
+    }
+    .card-desc {
+      font-size: 0.9rem;
+      color: #000000;
+      opacity: 0.5;
+      margin-top: 4px;
+    }
+    .back-btn {
+      background: #ffffff;
+      border: 1.5px solid #e5e5e5;
+      padding: 10px 18px;
+      border-radius: 24px;
+      cursor: pointer;
+      font-weight: 500;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      color: #000000;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+    .back-btn:hover {
+      border-color: #ee540e;
+      color: #ee540e;
+    }
+    .btn {
+      background: #ffffff;
+      border: 1.5px solid #e5e5e5;
+      padding: 10px 18px;
+      border-radius: 24px;
+      cursor: pointer;
+      font-weight: 500;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      color: #000000;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+    @media (min-width: 500px) {
+      .back-btn,
+      .btn {
+        padding: 12px 24px;
+        font-size: 1.05rem;
+      }
+    }
+    .btn-primary {
+      background: #ee540e;
+      color: #ffffff;
+      border-color: #ee540e;
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      background: #d44a0c;
+      border-color: #d44a0c;
+      color: #000000;
+    }
+    .btn:hover {
+      border-color: #ee540e;
+      color: #ee540e;
+    }
+    .visa-header {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .visa-header .back-btn {
+      align-self: flex-start;
+    }
+    .visa-title-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #000000;
+      text-align: center;
+      width: 100%;
+      padding: 4px 0;
+      border-bottom: 2px solid #e5e5e5;
+    }
+    @media (min-width: 500px) {
+      .visa-title-text {
+        font-size: 2.2rem;
+      }
+    }
+    .form-group {
+      margin: 14px 0;
+      width: 100%;
+    }
+    select,
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      border: 1.5px solid #e5e5e5;
+      background: #ffffff;
+      font-size: 1.15rem;
+      margin-top: 4px;
+      font-family: inherit;
+      color: #000000;
+      transition: border-color 0.2s;
+    }
+    select:focus,
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #ee540e;
+    }
+    .material-block {
+      background: #fafafa;
+      border-radius: 20px;
+      padding: 18px;
+      margin: 14px 0;
+      border: 1px solid #e5e5e5;
+      font-size: 1.15rem;
+    }
+    @media (min-width: 500px) {
+      .material-block {
+        padding: 22px;
+        font-size: 1.2rem;
+      }
+    }
+    .inline-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0;
+      font-size: 1.15rem;
+      color: #000000;
+    }
+    .report-preview {
+      background: #ffffff;
+      border: 2px solid #e5e5e5;
+      border-radius: 24px;
+      padding: 22px 18px;
+      margin-top: 20px;
+      line-height: 2.2;
+      font-size: 1.15rem;
+      color: #000000;
+      width: 100%;
+    }
+    @media (min-width: 500px) {
+      .report-preview {
+        padding: 30px 28px;
+        font-size: 1.2rem;
+      }
+    }
+    .report-preview hr {
+      border: 1px solid #e5e5e5;
+      margin: 18px 0;
+    }
+    .report-preview ul {
+      padding-left: 6px;
+      list-style: none;
+    }
+    .report-preview li {
+      margin-bottom: 10px;
+    }
+    .section-title {
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin: 4px 0 12px;
+      color: #000000;
+      letter-spacing: 1px;
+    }
+    .tip-text {
+      color: #000000;
+      opacity: 0.6;
+      font-size: 1rem;
+      margin-left: 4px;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      width: 100%;
+    }
+    .option-toggle {
+      display: flex;
+      gap: 8px;
+      margin: 6px 0;
+      flex-wrap: wrap;
+    }
+    .option-btn {
+      padding: 8px 16px;
+      border-radius: 18px;
+      border: 1.5px solid #e5e5e5;
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.2s;
+      color: #000000;
+    }
+    @media (min-width: 500px) {
+      .option-btn {
+        padding: 10px 18px;
+        font-size: 1.1rem;
+      }
+    }
+    .option-btn.active {
+      background: #ee540e;
+      color: #ffffff;
+      border-color: #ee540e;
+    }
+    .report-note {
+      display: block;
+      margin-left: 24px;
+      color: #000000;
+      opacity: 0.6;
+      font-size: 1rem;
+    }
+    .footer-text {
+      text-align: center;
+      color: #000000;
+      opacity: 0.4;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      letter-spacing: 0.5px;
+      width: 100%;
+    }
+    .not-submitted-text {
+      color: #ee540e;
+      font-weight: 600;
+    }
+    .status-conform {
+      color: #88b287;
+      font-weight: 500;
+    }
+    .status-not-conform {
+      color: #ee540e;
+      font-weight: 500;
+    }
+    .info-header {
+      background: #fafafa;
+      border-radius: 20px;
+      padding: 14px 18px;
+      border: 1px solid #e5e5e5;
+      font-size: 1.15rem;
+    }
+    .highlight-orange {
+      color: #ee540e;
+      font-weight: 600;
+    }
+    .underline-text {
+      text-decoration: underline;
+    }
+    .report-main-title {
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 14px;
+      color: #000000;
+      font-weight: 700;
+    }
+    @media (min-width: 500px) {
+      .report-main-title {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="system-container" id="appContainer">
+    <div id="navScreen" class="nav-screen">
+      <div class="nav-header">
+        <div class="main-title">签证材料审核</div>
+        <div class="sub-title">日本</div>
+      </div>
+      <div class="cards-grid">
+        <div class="visa-card" data-visa="single"><div class="card-icon">📅</div><div class="card-title">单次</div><div class="card-desc">短期旅游</div></div>
+        <div class="visa-card" data-visa="threeYear"><div class="card-icon">📅</div><div class="card-title">三年</div><div class="card-desc">多次往返</div></div>
+        <div class="visa-card" data-visa="fiveYear"><div class="card-icon">📅</div><div class="card-title">五年</div><div class="card-desc">长期多次</div></div>
+      </div>
+      <div style="color:#000000; opacity:0.5; margin-top:10px; font-size:1rem;">点击卡片进入材料审核</div>
+      <div class="footer-text">Github·Kuromimiyi316 / 盗名必究</div>
+    </div>
+
+    <div id="visaScreen" class="visa-screen hidden">
+      <div class="visa-header">
+        <button class="back-btn" id="backBtn">← 返回</button>
+        <span class="visa-title-text" id="visaTitle"></span>
+      </div>
+      <div class="info-header" style="width:100%;">
+        <div class="inline-row"><span>🔢 审核编号：</span><strong id="reviewId"></strong></div>
+        <div class="inline-row"><span>📅 审核日期：</span><span id="reviewDate"></span></div>
+        <div class="inline-row"><span>🏷️ 签证类型：</span><span id="visaTypeLabel"></span></div>
+        <div class="inline-row"><span>👤 申请人：</span><input type="text" id="applicantName" placeholder="输入申请人姓名" style="width:auto; flex:1;"></div>
+      </div>
+      <div id="dynamicForm" style="width:100%;"></div>
+      <button class="btn btn-primary" id="generateReportBtn" style="margin-top:14px;">📋 生成审核报告</button>
+      <div id="reportContainer" class="report-preview hidden"></div>
+      <div class="action-buttons">
+        <button class="btn" id="copyReportImgBtn" style="display:none;">🖼️ 复制图片</button>
+        <button class="btn" id="copyTextBtn" style="display:none;">📝 复制文本</button>
+      </div>
+      <div class="footer-text">Github·Kuromimiyi316 / 盗名必究</div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const state = { currentVisa: 'single', employeeOption: 'paper', flowOption: '', freelanceOption: '' };
+      function generateId(p) { return p + Math.floor(10000 + Math.random() * 90000); }
+      function todayString() { const d = new Date(); return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`; }
+      const navScreen = document.getElementById('navScreen');
+      const visaScreen = document.getElementById('visaScreen');
+      const visaTitle = document.getElementById('visaTitle');
+      const reviewIdSpan = document.getElementById('reviewId');
+      const reviewDateSpan = document.getElementById('reviewDate');
+      const visaTypeLabel = document.getElementById('visaTypeLabel');
+      const applicantInput = document.getElementById('applicantName');
+      const dynamicForm = document.getElementById('dynamicForm');
+      const reportContainer = document.getElementById('reportContainer');
+      const generateBtn = document.getElementById('generateReportBtn');
+      const copyImgBtn = document.getElementById('copyReportImgBtn');
+      const copyTextBtn = document.getElementById('copyTextBtn');
+      const backBtn = document.getElementById('backBtn');
+      const visaNames = { single: '单次', threeYear: '三年', fiveYear: '五年' };
+      const idPrefix = { single: 'JPS', threeYear: 'JP3M', fiveYear: 'JP5M' };
+      const numberIcons = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
+
+      function baseMaterials(visaType) {
+        const photoTip = (visaType === 'threeYear' || visaType === 'fiveYear') 
+          ? '需纸质版打印，本人近半年内拍摄2寸白底彩照，不可露齿' 
+          : '需电子版，本人近半年内拍摄2寸白底彩照，不可露齿';
+        return [
+          { name: '护照原件', tip: '有效期需在6个月及以上' },
+          { name: '照片', tip: photoTip },
+          { name: '赴日申请表', tip: '上次赴日日期必填，若没去过则填无，去过则填往返日期' },
+          { name: '身份证', tip: '需本人清晰扫描件或复印件' },
+          { name: '户口本', tip: '需清晰扫描件/复印件，包含户口本首页、户主页、本人页' }
+        ];
+      }
+
+      function buildForm(visaType) {
+        let html = '<div class="material-block">';
+        baseMaterials(visaType).forEach((item, idx) => html += buildMaterialItem(item.name, `base_${idx}`, item.tip));
+        html += '</div><div class="material-block"><div class="form-group"><label>身份</label><select id="identitySelect"><option value="">--请选择--</option>';
+        getIdentities(visaType).forEach(id => html += `<option value="${id}">${id}</option>`);
+        html += '</select></div><div id="identityDetails"></div></div>';
+        dynamicForm.innerHTML = html;
+        document.getElementById('identitySelect').addEventListener('change', function(e) { renderIdentityDetails(e.target.value, visaType); });
+      }
+
+      function getIdentities(v) {
+        if (v === 'single') return ['在职人员', '退休人员', '学生', '自由职业', '信用卡'];
+        if (v === 'threeYear') return ['在职人员', '退休人员', '自由职业', '简化'];
+        return ['在职人员', '退休人员', '自由职业'];
+      }
+
+      function buildMaterialItem(label, key, tip) {
+        return `<div style="border-bottom:1px solid #e5e5e5; padding:8px 0;"><span style="color:#000000;">${label}</span><select class="submit-select" data-key="${key}" style="margin-top:4px;"><option value="">--</option><option value="submitted">已提交</option><option value="not_submitted">未提交</option></select><div class="conditional-block" id="cond_${key}" style="display:none; margin-top:6px;"></div></div>`;
+      }
+
+      dynamicForm.addEventListener('change', function(e) {
+        if (e.target.classList.contains('submit-select')) {
+          const key = e.target.dataset.key, val = e.target.value, condDiv = document.getElementById(`cond_${key}`);
+          if (!condDiv) return;
+          if (val === 'submitted') {
+            condDiv.style.display = 'block';
+            condDiv.innerHTML = `<select class="conform-select" data-key="${key}"><option value="">--</option><option value="conform">符合</option><option value="not_conform">不符合</option></select><div class="reason-block" id="reason_${key}" style="display:none; margin-top:4px;"><input type="text" placeholder="输入不符合原因" class="reason-input" data-key="${key}" style="width:100%;"></div>`;
+            condDiv.querySelector('.conform-select').addEventListener('change', function(ev) { document.getElementById(`reason_${key}`).style.display = ev.target.value === 'not_conform' ? 'block' : 'none'; });
+          } else if (val === 'not_submitted') {
+            condDiv.style.display = 'block';
+            condDiv.innerHTML = `<span class="tip-text">⚠️ <span class="not-submitted-text">未提交</span> - ${getTipByKey(key)}</span>`;
+          } else { condDiv.style.display = 'none'; }
+        }
+      });
+
+      function getTipByKey(key) {
+        const tips = { 'emp_proof_paper': '需包含本人姓名、职务、任职期、年收入或月收入，加盖红章，原件邮寄', 'emp_tax_screenshot': '根据附件步骤进行', 'free_income_desc': '需真实填写', 'free_deposit': '需金额达到相应标准，可验证', 'student_xuexin': '需官网下载PDF原件，有效期在2个月及以上', 'card_color_copy': '需彩色复印件，卡面清晰并在一个页面', 'card_receipt': '需近1个月内消费小票或流水账单PDF电子版', 'retire_cert': '需包含退休金等相关字样，且余额在2w+', 'retire_deposit': '需达到相应金额', 'retire_property': '上海、南京、苏州、无锡、杭州、宁波', 'simple_landing': '三年内两次日本登陆许可', 'simple_travel': '出行记录' };
+        if (key.startsWith('base_')) { const idx = parseInt(key.split('_')[1]); const materials = baseMaterials(state.currentVisa); if (materials[idx]) return materials[idx].tip; }
+        return tips[key] || '注意金额要求';
+      }
+
+      function renderIdentityDetails(identity, visaType) {
+        const container = document.getElementById('identityDetails');
+        if (!identity) { container.innerHTML = ''; return; }
+        let html = '';
+        if (identity === '在职人员') {
+          html += '<div><strong style="color:#000000;">在职证明 (二选一)</strong><div class="option-toggle" id="empOptionToggle"><span class="option-btn active" data-opt="paper">盖红章纸质版原件</span><span class="option-btn" data-opt="tax">税单申报截图+个人页面</span></div><div id="empOptionDetail"></div></div>';
+          html += '<div><strong style="color:#000000;">流水/税单 (三选一)</strong><div class="option-toggle" id="flowOptionToggle">';
+          getFlowOptions(visaType, 'employee').forEach((f, i) => html += `<span class="option-btn ${i===0?'active':''}" data-opt="${f.key}">${f.label}</span>`);
+          html += '</div><div id="flowOptionDetail"></div></div>';
+          setTimeout(() => {
+            document.getElementById('empOptionToggle').addEventListener('click', function(e) { if (e.target.classList.contains('option-btn')) { document.querySelectorAll('#empOptionToggle .option-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); state.employeeOption = e.target.dataset.opt; renderEmployeeOptionDetail(); } });
+            document.getElementById('flowOptionToggle').addEventListener('click', function(e) { if (e.target.classList.contains('option-btn')) { document.querySelectorAll('#flowOptionToggle .option-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); state.flowOption = e.target.dataset.opt; renderFlowOptionDetail(); } });
+            renderEmployeeOptionDetail(); state.flowOption = getFlowOptions(visaType, 'employee')[0].key; renderFlowOptionDetail();
+          }, 0);
+        } else if (identity === '自由职业') {
+          html += buildMaterialItem('个人收入情况说明', 'free_income_desc', '需真实填写');
+          html += '<div><strong style="color:#000000;">流水 (二选一)</strong><div class="option-toggle" id="freelanceFlowToggle">';
+          getFlowOptions(visaType, 'freelance').forEach((f, i) => html += `<span class="option-btn ${i===0?'active':''}" data-opt="${f.key}">${f.label}</span>`);
+          html += '</div><div id="freelanceFlowDetail"></div></div>';
+          html += buildMaterialItem('存款证明', 'free_deposit', getDepositTip(visaType));
+          setTimeout(() => { document.getElementById('freelanceFlowToggle').addEventListener('click', function(e) { if (e.target.classList.contains('option-btn')) { document.querySelectorAll('#freelanceFlowToggle .option-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); state.freelanceOption = e.target.dataset.opt; renderFreelanceFlowDetail(); } }); state.freelanceOption = getFlowOptions(visaType, 'freelance')[0].key; renderFreelanceFlowDetail(); }, 0);
+        } else if (identity === '学生') { html += buildMaterialItem('学信网证明', 'student_xuexin', '需官网下载PDF原件，有效期在2个月及以上'); }
+        else if (identity === '信用卡') { html += '<div><label style="color:#000000;">级别</label><select id="cardLevel"><option>白金卡</option><option>金卡</option></select></div>'; html += buildMaterialItem('彩色复印件', 'card_color_copy', '需彩色复印件，卡面清晰并在一个页面'); html += buildMaterialItem('近1个月内消费小票或流水账单', 'card_receipt', '需近1个月内消费小票或流水账单PDF电子版'); }
+        else if (identity === '退休人员') { html += buildMaterialItem('退休证/退休金流水', 'retire_cert', '需包含退休金等相关字样，且余额在2w+'); html += buildMaterialItem('存款证明', 'retire_deposit', getDepositTip(visaType)); if (visaType === 'fiveYear') html += buildMaterialItem('房产证', 'retire_property', '上海、南京、苏州、无锡、杭州、宁波'); }
+        else if (identity === '简化') { html += buildMaterialItem('三年内两次日本登陆许可', 'simple_landing', ''); html += buildMaterialItem('出行记录', 'simple_travel', ''); }
+        container.innerHTML = html;
+      }
+
+      function renderEmployeeOptionDetail() { const d = document.getElementById('empOptionDetail'); if (d) d.innerHTML = state.employeeOption === 'paper' ? buildMaterialItem('盖红章纸质版原件', 'emp_proof_paper', '需包含本人姓名、职务、任职期、年收入或月收入，加盖红章，原件邮寄') : buildMaterialItem('税单申报截图+个人页面', 'emp_tax_screenshot', '根据附件步骤进行'); }
+      function renderFlowOptionDetail() { const d = document.getElementById('flowOptionDetail'); if (d) { const f = getFlowOptions(state.currentVisa, 'employee').find(x => x.key === state.flowOption); if (f) d.innerHTML = buildMaterialItem(f.label, f.key, '注意金额'); } }
+      function renderFreelanceFlowDetail() { const d = document.getElementById('freelanceFlowDetail'); if (d) { const f = getFlowOptions(state.currentVisa, 'freelance').find(x => x.key === state.freelanceOption); if (f) d.innerHTML = buildMaterialItem(f.label, f.key, f.tip); } }
+
+      function getFlowOptions(visaType, type) {
+        if (type === 'employee') {
+          if (visaType === 'single') return [{ label: '近1年税单明细（500+）', key: 'flow_tax_detail_500' }, { label: '近1年税单申报总额（10w+）', key: 'flow_tax_total_10w' }, { label: '近1年工资流水收入（10w+）', key: 'flow_salary_10w' }];
+          if (visaType === 'threeYear') return [{ label: '近1年税单明细（1w+）', key: 'flow_tax_detail_1w' }, { label: '近1年税单申报总额（20w+）', key: 'flow_tax_total_20w' }, { label: '近1年工资流水收入（20w+）', key: 'flow_salary_20w' }];
+          return [{ label: '近1年税单明细（5w+）', key: 'flow_tax_detail_5w' }, { label: '近1年税单申报总额（50w+）', key: 'flow_tax_total_50w' }, { label: '近1年工资流水收入（50w+）', key: 'flow_salary_50w' }];
+        } else {
+          if (visaType === 'single') return [{ label: '近1年银行收入流水（10w+）', key: 'free_income_10w', tip: '需达到1年收入10w' }, { label: '近1年银行流水余额（2w+）', key: 'free_balance_2w', tip: '需达到流水余额2w+' }];
+          if (visaType === 'threeYear') return [{ label: '近1年银行收入流水（20w+）', key: 'free_income_20w', tip: '需达到1年收入20w+' }, { label: '近1年银行流水余额（2w+）', key: 'free_balance_2w', tip: '需达到流水余额2w+' }];
+          return [{ label: '近1年银行收入流水（50w+）', key: 'free_income_50w', tip: '需达到1年收入50w+' }, { label: '近1年银行流水余额（2w+）', key: 'free_balance_2w', tip: '需达到流水余额2w+' }];
+        }
+      }
+
+      function getDepositTip(v) { if (v === 'single') return '需金额达到10w+，可验证'; if (v === 'threeYear') return '需金额达到50w+，可验证'; return '需金额达到100w+，可验证'; }
+
+      function collectFormData() {
+        const data = { identity: document.getElementById('identitySelect')?.value || '' };
+        document.querySelectorAll('.submit-select').forEach(s => data[s.dataset.key + '_submit'] = s.value);
+        document.querySelectorAll('.conform-select').forEach(s => data[s.dataset.key + '_conform'] = s.value);
+        document.querySelectorAll('.reason-input').forEach(i => data[i.dataset.key + '_reason'] = i.value);
+        data.applicant = document.getElementById('applicantName').value.trim();
+        data.employeeOption = state.employeeOption; data.flowOption = state.flowOption; data.freelanceOption = state.freelanceOption;
+        return data;
+      }
+
+      function renderItemLine(label, key, data, iconNum) {
+        const icon = numberIcons[iconNum] || '🔹', submit = data[key + '_submit'];
+        if (submit === 'not_submitted') return `<li>${icon} ${label}：🔸 <span class="not-submitted-text">未提交</span><br><span class="report-note">- ${getTipByKey(key)}</span></li>`;
+        if (submit === 'submitted') { const conf = data[key + '_conform']; if (conf === 'conform') return `<li>${icon} ${label}：<span class="status-conform">✅ 符合</span></li>`; if (conf === 'not_conform') return `<li>${icon} ${label}：<span class="status-not-conform">❌ 不符合</span> (原因: ${data[key+'_reason'] || '无'})</li>`; return `<li>${icon} ${label}：已提交 (未评定)</li>`; }
+        return `<li>${icon} ${label}：未选择</li>`;
+      }
+
+      function generateReportHTML(data, visaType) {
+        let html = `<div class="report-main-title">🧾 签证初审报告</div><hr>`;
+        html += `<p style="color:#000000;"><strong>审核编号：</strong>${reviewIdSpan.textContent}</p>`;
+        html += `<p style="color:#000000;"><strong>审核日期：</strong>${reviewDateSpan.textContent}</p>`;
+        html += `<p style="color:#000000;"><strong>签证类型：</strong>日本${visaNames[visaType]}</p>`;
+        html += `<p style="color:#000000;"><strong>申请人：</strong>${data.applicant || '未填写'}</p><hr>`;
+        html += `<div class="section-title">📩 基础材料</div><ul>`;
+        baseMaterials(visaType).forEach((item, idx) => html += renderItemLine(item.name, `base_${idx}`, data, idx));
+        html += `</ul><hr><div class="section-title">📜 经济材料</div><ul>`;
+        html += renderIdentityLines(data, visaType) + `</ul><hr>`;
+        html += `<div class="section-title">⚠️ 注意事项</div><ol style="padding-left:18px; color:#000000; margin-top:0;">`;
+        html += `<li>护照、申请表（本人签字）、纸质版在职证明、存款证明、纸质版银行流水，必须 · <span class="highlight-orange">原件</span> · 邮寄</li>`;
+        html += `<li>照片可帮打印，15元/人</li>`;
+        html += `<li>邮寄建议 <span class="underline-text">顺丰寄付</span>，寄出后请告知快递单号以便核对</li>`;
+        html += `<li>如果有预定航班 · <span class="highlight-orange">必须</span> · 提前告知</li></ol>`;
+        html += `<hr><p style="text-align:center; color:#000000; opacity:0.6;">*以上为初审结果，最终以收到材料后综合审查结果为准</p>`;
+        return html;
+      }
+
+      function renderIdentityLines(data, visaType) {
+        let lines = '', counter = 0; const id = data.identity;
+        if (id === '在职人员') { lines += renderItemLine(data.employeeOption==='paper'?'在职证明(盖章原件)':'税单申报截图', data.employeeOption==='paper'?'emp_proof_paper':'emp_tax_screenshot', data, counter++); const flow = getFlowOptions(visaType, 'employee').find(f => f.key === data.flowOption); if (flow) lines += renderItemLine(flow.label, flow.key, data, counter++); }
+        else if (id === '自由职业') { lines += renderItemLine('个人收入情况说明', 'free_income_desc', data, counter++); const ff = getFlowOptions(visaType, 'freelance').find(f => f.key === data.freelanceOption); if (ff) lines += renderItemLine(ff.label, ff.key, data, counter++); lines += renderItemLine('存款证明', 'free_deposit', data, counter++); }
+        else if (id === '学生') lines += renderItemLine('学信网证明', 'student_xuexin', data, counter++);
+        else if (id === '信用卡') { lines += `<li style="color:#000000;">${numberIcons[counter++]} 信用卡级别：${document.getElementById('cardLevel')?.value || '白金卡'}</li>`; lines += renderItemLine('彩色复印件', 'card_color_copy', data, counter++); lines += renderItemLine('消费小票/流水', 'card_receipt', data, counter++); }
+        else if (id === '退休人员') { lines += renderItemLine('退休证/退休金流水', 'retire_cert', data, counter++); lines += renderItemLine('存款证明', 'retire_deposit', data, counter++); if (visaType === 'fiveYear') lines += renderItemLine('房产证', 'retire_property', data, counter++); }
+        else if (id === '简化') { lines += renderItemLine('三年内两次日本登陆许可', 'simple_landing', data, counter++); lines += renderItemLine('出行记录', 'simple_travel', data, counter++); }
+        return lines;
+      }
+
+      function buildPlainIdentityLines(data, visaType) {
+        let text = '', counter = 0; const id = data.identity;
+        if (id === '在职人员') { text += `${numberIcons[counter++]} ${data.employeeOption==='paper'?'在职证明(盖章原件)':'税单申报截图'}: ${plainStatusText(data, data.employeeOption==='paper'?'emp_proof_paper':'emp_tax_screenshot')}\n`; const flow = getFlowOptions(visaType, 'employee').find(f => f.key === data.flowOption); if (flow) text += `${numberIcons[counter++]} ${flow.label}: ${plainStatusText(data, flow.key)}\n`; }
+        else if (id === '自由职业') { text += `${numberIcons[counter++]} 个人收入情况说明: ${plainStatusText(data, 'free_income_desc')}\n`; const ff = getFlowOptions(visaType, 'freelance').find(f => f.key === data.freelanceOption); if (ff) text += `${numberIcons[counter++]} ${ff.label}: ${plainStatusText(data, ff.key)}\n`; text += `${numberIcons[counter++]} 存款证明: ${plainStatusText(data, 'free_deposit')}\n`; }
+        else if (id === '学生') text += `${numberIcons[counter++]} 学信网证明: ${plainStatusText(data, 'student_xuexin')}\n`;
+        else if (id === '信用卡') { text += `${numberIcons[counter++]} 级别: ${document.getElementById('cardLevel')?.value || '白金卡'}\n${numberIcons[counter++]} 彩色复印件: ${plainStatusText(data, 'card_color_copy')}\n${numberIcons[counter++]} 消费小票/流水: ${plainStatusText(data, 'card_receipt')}\n`; }
+        else if (id === '退休人员') { text += `${numberIcons[counter++]} 退休证/退休金流水: ${plainStatusText(data, 'retire_cert')}\n${numberIcons[counter++]} 存款证明: ${plainStatusText(data, 'retire_deposit')}\n`; if (visaType === 'fiveYear') text += `${numberIcons[counter++]} 房产证: ${plainStatusText(data, 'retire_property')}\n`; }
+        else if (id === '简化') { text += `${numberIcons[counter++]} 三年内两次日本登陆许可: ${plainStatusText(data, 'simple_landing')}\n${numberIcons[counter++]} 出行记录: ${plainStatusText(data, 'simple_travel')}\n`; }
+        return text;
+      }
+
+      function plainStatusText(data, key) {
+        const submit = data[key + '_submit'];
+        if (submit === 'not_submitted') return `🔸 未提交\n  - ${getTipByKey(key)}`;
+        if (submit === 'submitted') { const conf = data[key + '_conform']; if (conf === 'conform') return '✅ 符合'; if (conf === 'not_conform') return `❌ 不符合 (${data[key+'_reason'] || ''})`; return '已提交'; }
+        return '未选择';
+      }
+
+      function showVisaScreen(visaType) {
+        state.currentVisa = visaType; state.employeeOption = 'paper'; state.flowOption = ''; state.freelanceOption = '';
+        navScreen.classList.add('hidden'); visaScreen.classList.remove('hidden');
+        visaTitle.textContent = `日本${visaNames[visaType]}签证`; reviewIdSpan.textContent = generateId(idPrefix[visaType]); reviewDateSpan.textContent = todayString(); visaTypeLabel.textContent = `日本${visaNames[visaType]}`;
+        applicantInput.value = ''; reportContainer.classList.add('hidden'); copyImgBtn.style.display = 'none'; copyTextBtn.style.display = 'none';
+        buildForm(visaType);
+      }
+
+      backBtn.addEventListener('click', () => { visaScreen.classList.add('hidden'); navScreen.classList.remove('hidden'); });
+      document.querySelectorAll('.visa-card').forEach(card => card.addEventListener('click', e => showVisaScreen(e.currentTarget.dataset.visa)));
+      generateBtn.addEventListener('click', () => { const data = collectFormData(); reportContainer.innerHTML = generateReportHTML(data, state.currentVisa); reportContainer.classList.remove('hidden'); copyImgBtn.style.display = 'inline-flex'; copyTextBtn.style.display = 'inline-flex'; });
+      copyImgBtn.addEventListener('click', async () => { if (reportContainer.classList.contains('hidden')) return; try { const canvas = await html2canvas(reportContainer, { scale: 2, backgroundColor: '#ffffff' }); const blob = await new Promise(res => canvas.toBlob(res, 'image/png')); await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); alert('✅ 报告图片已复制到剪贴板'); } catch (e) { alert('图片复制失败，可手动截图'); } });
+      copyTextBtn.addEventListener('click', async () => { 
+        const data = collectFormData(); 
+        let text = `🧾 签证审核报告\n------------------------------\n审核编号：${reviewIdSpan.textContent}\n审核日期：${reviewDateSpan.textContent}\n签证类型：日本${visaNames[state.currentVisa]}\n申请人：${data.applicant || '未填写'}\n------------------------------\n📩 基础材料\n\n`; 
+        baseMaterials(state.currentVisa).forEach((item, idx) => text += `${numberIcons[idx]} ${item.name}: ${plainStatusText(data, `base_${idx}`)}\n`); 
+        text += `\n------------------------------\n📜 经济材料\n\n`; 
+        text += buildPlainIdentityLines(data, state.currentVisa); 
+        text += `\n------------------------------\n⚠️ 注意事项\n\n1.护照、申请表（本人签字）、纸质版在职证明、存款证明、纸质版银行流水，必须 · 原件 · 邮寄\n2.照片可帮打印，15元/人\n3.邮寄建议顺丰寄付，寄出后请告知快递单号以便核对\n4.如果有预定航班 · 必须 · 提前告知\n\n------------------------------\n*以上为初审结果，最终以收到材料后综合审查结果为准\n`; 
+        try { await navigator.clipboard.writeText(text); alert('📝 报告文本已复制到剪贴板'); } catch (e) { alert('复制失败，请手动复制'); } 
+      });
+    })();
+  </script>
+</body>
+</html>
