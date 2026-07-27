@@ -27,24 +27,18 @@
       display: flex; align-items: center; gap: 0.3rem; text-decoration: none;
     }
     .back-btn:hover { background: #ede3d8; border-color: #b39274; }
-    .sub-selector { display: flex; gap: 0.8rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .sub-card {
-      padding: 0.8rem 1.4rem; border-radius: 2rem; text-align: center; cursor: pointer;
-      transition: all 0.25s ease; border: 2px solid #e8ddd0; background: #fdfaf7;
-      font-weight: 550; font-size: 0.9rem; color: #5e4e3c;
-    }
-    .sub-card:hover { border-color: #b39274; background: #fef9f4; }
-    .sub-card.active { border-color: #b39274; background: #f0e2d4; color: #3b2e24; }
     .form-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
     .form-row { display: flex; flex-wrap: wrap; gap: 1rem; }
     .form-row .input-group { flex: 1 1 calc(50% - 0.5rem); }
     .input-group { display: flex; flex-direction: column; gap: 0.35rem; }
     label { font-size: 0.85rem; font-weight: 550; color: #5e4e3c; }
-    input {
+    .hint { font-size: 0.7rem; color: #b9a18b; margin-top: 0.15rem; }
+    input, textarea {
       width: 100%; padding: 0.8rem 1.1rem; border: 1.5px solid #e0d6cc; border-radius: 1.3rem;
-      font-size: 0.95rem; background: #fcfaf8; transition: all 0.2s; font-family: inherit; color: #2e241a;
+      font-size: 0.95rem; background: #fcfaf8; transition: all 0.2s; font-family: inherit; color: #2e241a; resize: vertical;
     }
-    input:focus { outline: none; border-color: #b39274; box-shadow: 0 0 0 4px rgba(179,146,116,0.12); background: #ffffff; }
+    textarea { min-height: 60px; }
+    input:focus, textarea:focus { outline: none; border-color: #b39274; box-shadow: 0 0 0 4px rgba(179,146,116,0.12); background: #ffffff; }
     .button-row { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.5rem 0 1.5rem; }
     .btn {
       background: #f0ebe4; border: none; padding: 0.75rem 1.6rem; border-radius: 2.5rem;
@@ -55,22 +49,30 @@
     .btn-primary:hover { background: #9e7d60; }
     .btn:hover { background: #e5d9cc; }
     .output-section { margin-top: 1rem; }
-    .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+    .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem; }
     .output-header span { font-weight: 600; color: #3b2e24; font-size: 1rem; }
+    .output-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
     .copy-btn {
       background: transparent; border: 1px solid #d6c7b8; padding: 0.4rem 1rem; border-radius: 2rem;
       font-size: 0.8rem; color: #5e4e3c; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;
     }
     .copy-btn:hover { background: #ede3d8; }
+    .copy-btn.img { border-color: #c8b299; color: #8b6d4b; }
+    .copy-btn.img:hover { background: #f0e2d4; }
     .output-box {
       background: #faf8f5; border: 1.5px solid #e2d6ca; border-radius: 1.5rem; padding: 1.3rem 1.4rem;
-      font-family: 'SF Mono','Cascadia Code','Consolas',monospace; font-size: 0.9rem; line-height: 1.6;
-      white-space: pre-wrap; word-break: break-word; color: #2e241a; min-height: 150px; max-height: 400px; overflow-y: auto;
+      font-family: 'SF Mono','Cascadia Code','Consolas',monospace; font-size: 0.85rem; line-height: 1.5;
+      white-space: pre-wrap; word-break: break-word; color: #2e241a; min-height: 150px; max-height: 450px; overflow-y: auto;
     }
     .placeholder-note { color: #b9a18b; font-style: italic; }
     hr { border: 0.5px solid #e3d9ce; margin: 1rem 0 0.6rem; }
     .footer-note { font-size: 0.7rem; color: #b9a18b; text-align: right; line-height: 1.5; }
-    @media (max-width: 600px) { .card { padding: 1.3rem; } .form-row { flex-direction: column; } .btn { width: 100%; } }
+    #imageCanvas { display: none; }
+    @media (max-width: 600px) { 
+      .card { padding: 1.3rem; } 
+      .form-row { flex-direction: column; } 
+      .btn { width: 100%; } 
+    }
   </style>
 </head>
 <body>
@@ -81,28 +83,283 @@
       <span class="section-icon">🧾</span><span class="section-title">结单小票</span>
       <a class="back-btn" href="index.html">↩ 返回首页</a>
     </div>
-    <div class="sub-selector" id="genderBtns">
-      <div class="sub-card active" onclick="switchGender('female',this)">🎀 女生</div>
-      <div class="sub-card" onclick="switchGender('male',this)">⚡ 男生</div>
+    <div id="formContent">
+      <div class="form-grid">
+        <div class="form-row">
+          <div class="input-group">
+            <label>🔢 编号</label>
+            <input id="tNumber" placeholder="例如：VIP520">
+          </div>
+          <div class="input-group">
+            <label>📅 时间</label>
+            <input id="tDate" placeholder="例如：2026.2.5">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="input-group">
+            <label>👤 板宝</label>
+            <input id="tBoss" placeholder="例如：署名">
+          </div>
+          <div class="input-group">
+            <label>👥 人数</label>
+            <input id="tPeople" type="number" min="1" placeholder="例如：1">
+            <span class="hint">陪陪数量，决定下方显示几行陪陪名</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>🎯 项目名称</label>
+          <input id="tProject" placeholder="例如：手游体验">
+        </div>
+        <div class="input-group">
+          <label>🎮 陪陪名</label>
+          <input id="tPlayer" placeholder="例如：啾啾 mia或啾啾，mia">
+          <span class="hint">多个陪陪请用空格或逗号分隔，如：啾啾 mia 或 啾啾，mia</span>
+        </div>
+        <div class="input-group">
+          <label>📝 备注</label>
+          <input id="tNote" placeholder="例如：痛将有时 爱必将至">
+        </div>
+        <div class="input-group">
+          <label>💰 账单合计</label>
+          <input id="tAmount" placeholder="例如：88.88">
+        </div>
+      </div>
+      <div class="button-row">
+        <button class="btn btn-primary" onclick="gen()">✨ 生成小票</button>
+        <button class="btn" onclick="clearForm()">🧹 清空内容</button>
+      </div>
+      <div class="output-section">
+        <div class="output-header">
+          <span>📄 结单小票</span>
+          <div class="output-btns">
+            <button class="copy-btn" onclick="copyOutput('tOutput')">📋 复制文本</button>
+            <button class="copy-btn img" onclick="copyAsImage()">🖼️ 复制图片</button>
+          </div>
+        </div>
+        <div class="output-box" id="tOutput"><span class="placeholder-note">尚未生成小票，请填写信息后点击"生成小票"</span></div>
+      </div>
     </div>
-    <div id="formContent"></div>
     <hr>
     <div class="footer-note">幸运星俱乐部 · 客服专属工具<br>Github·Kuromimiyi316，盗名必究</div>
   </div>
+  <canvas id="imageCanvas"></canvas>
   <script>
-    function formatMoney(raw) { if(!raw||!raw.trim())return'0元'; const t=raw.trim(); if(t.includes('元'))return t; if(/^-?\d+(\.\d+)?$/.test(t))return t+'元'; return t; }
     function getVal(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
     function setVal(id,v){ const el=document.getElementById(id); if(el)el.value=v; }
-    async function copyOutput(oid){ const el=document.getElementById(oid); if(!el)return; const t=el.textContent||''; if(!t.trim()||el.querySelector('.placeholder-note')){alert('请先生成');return;} try{await navigator.clipboard.writeText(t);}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);} }
-    const fT=`🎀 ·˚⋆𓏴𓏴 𝐗𝐘𝐗 𝐂𝐋𝐔𝐁 𓏴𓏴⋆˚· 🎀\n   ⠀⠀⠀     🎐结算小票\n ‧˚₊꒷꒦︶︶︶︶꒷꒦︶︶︶︶꒦꒷₊˚ ‧\n\n🤍𓏽板宝⌯▹：{boss}\n🧸𓏽陪陪⌯▹：{companion}\n🤍𓏽接待/派单⌯▹：{reception}\n🧸𓏽下单项目⌯▹：{project}\n🤍𓏽交易方式⌯▹：{payment}\n🧸𓏽总金额⌯▹：{total}\n🤍𓏽卡内余额⌯▹：{balance}\n\n✄̶───┈ ⋆交付时间⋆ദ്ദി˶ᕑᗢᓫ)✧\n                     {date}`;
-    const mT=`⚡ ·˚⋆𓏴𓏴 𝐗𝐘𝐗 𝐂𝐋𝐔𝐁 𓏴𓏴⋆˚· ⚡\n   ⠀⠀⠀     🎐结算小票\n ‧˚₊꒷꒦︶︶︶︶꒷꒦︶︶︶︶꒦꒷₊˚ ‧\n\n💙𓏽板宝⌯▹：{boss}\n🎮𓏽陪陪⌯▹：{companion}\n💙𓏽接待/派单⌯▹：{reception}\n🎮𓏽下单项目⌯▹：{project}\n💙𓏽交易方式⌯▹：{payment}\n🎮𓏽总金额⌯▹：{total}\n💙𓏽卡内余额⌯▹：{balance}\n\n✄̶───┈ ⋆交付时间⋆ദ്ദി˶ᕑᗢᓫ)✧\n                     {date}`;
-    function fF(){ return `<div class="form-grid"><div class="form-row"><div class="input-group"><label>🤍 板宝</label><input id="tBoss" placeholder="例如：Kitty"></div><div class="input-group"><label>🧸 陪陪</label><input id="tCompanion" placeholder="例如：小二"></div></div><div class="form-row"><div class="input-group"><label>🤍 接待/派单</label><input id="tReception" placeholder="例如：Mia"></div><div class="input-group"><label>🧸 下单项目</label><input id="tProject" placeholder="例如：PC体验"></div></div><div class="form-row"><div class="input-group"><label>🤍 交易方式</label><input id="tPayment" placeholder="例如：微信/扣卡/支付宝"></div><div class="input-group"><label>🧸 总金额</label><input id="tTotal" placeholder="例如：99"></div></div><div class="form-row"><div class="input-group"><label>🤍 卡内余额</label><input id="tBalance" placeholder="例如：485"></div><div class="input-group"><label>📅 交付时间</label><input id="tDate" placeholder="例如：2026年7月22日"></div></div></div><div class="button-row"><button class="btn btn-primary" onclick="gen('female')">✨ 生成</button><button class="btn" onclick="clearForm()">🧹 清空</button></div><div class="output-section"><div class="output-header"><span>📄 输出</span><button class="copy-btn" onclick="copyOutput('tOutput')">📋 复制</button></div><div class="output-box" id="tOutput"><span class="placeholder-note">尚未生成</span></div></div>`; }
-    function mF(){ return `<div class="form-grid"><div class="form-row"><div class="input-group"><label>💙 板宝</label><input id="tBoss" placeholder="例如：杰哥"></div><div class="input-group"><label>🎮 陪陪</label><input id="tCompanion" placeholder="例如：阿强"></div></div><div class="form-row"><div class="input-group"><label>💙 接待/派单</label><input id="tReception" placeholder="例如：Leo"></div><div class="input-group"><label>🎮 下单项目</label><input id="tProject" placeholder="例如：电竞陪玩"></div></div><div class="form-row"><div class="input-group"><label>💙 交易方式</label><input id="tPayment" placeholder="例如：微信/扣卡/支付宝"></div><div class="input-group"><label>🎮 总金额</label><input id="tTotal" placeholder="例如：128"></div></div><div class="form-row"><div class="input-group"><label>💙 卡内余额</label><input id="tBalance" placeholder="例如：520"></div><div class="input-group"><label>📅 交付时间</label><input id="tDate" placeholder="例如：2026年7月22日"></div></div></div><div class="button-row"><button class="btn btn-primary" onclick="gen('male')">✨ 生成</button><button class="btn" onclick="clearForm()">🧹 清空</button></div><div class="output-section"><div class="output-header"><span>📄 输出</span><button class="copy-btn" onclick="copyOutput('tOutput')">📋 复制</button></div><div class="output-box" id="tOutput"><span class="placeholder-note">尚未生成</span></div></div>`; }
-    let curGen='female';
-    function switchGender(g,btn){ curGen=g; btn.parentElement.querySelectorAll('.sub-card').forEach(c=>c.classList.remove('active')); btn.classList.add('active'); document.getElementById('formContent').innerHTML=g==='female'?fF():mF(); }
-    function gen(g){ const t=g==='female'?fT:mT; document.getElementById('tOutput').textContent=t.replace(/{boss}/g,getVal('tBoss')||'（未填写）').replace(/{companion}/g,getVal('tCompanion')||'（未填写）').replace(/{reception}/g,getVal('tReception')||'（未填写）').replace(/{project}/g,getVal('tProject')||'（未填写）').replace(/{payment}/g,getVal('tPayment')||'（未填写）').replace(/{total}/g,formatMoney(getVal('tTotal'))).replace(/{balance}/g,formatMoney(getVal('tBalance'))).replace(/{date}/g,getVal('tDate')||'（未填写）'); }
-    function clearForm(){ 'tBoss,tCompanion,tReception,tProject,tPayment,tTotal,tBalance,tDate'.split(',').forEach(id=>setVal(id,'')); document.getElementById('tOutput').innerHTML='<span class="placeholder-note">尚未生成</span>'; }
-    document.getElementById('formContent').innerHTML=fF();
+    
+    async function copyOutput(oid){ 
+      const el=document.getElementById(oid); 
+      if(!el)return; 
+      const t=el.textContent||''; 
+      if(!t.trim()||el.querySelector('.placeholder-note')){
+        alert('请先生成小票再复制');return;
+      } 
+      try{await navigator.clipboard.writeText(t);}catch(e){
+        const ta=document.createElement('textarea');ta.value=t;
+        document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+      } 
+    }
+
+    function formatAmount(raw){
+      if(!raw||!raw.trim())return'0.00';
+      const t=raw.trim().replace('￥','').replace('¥','').replace('元','').trim();
+      const num=parseFloat(t);
+      if(isNaN(num))return t;
+      return num.toFixed(2);
+    }
+
+    function parsePlayers(raw){
+      if(!raw||!raw.trim())return['陪陪名'];
+      const parts=raw.split(/[，,]/).filter(p=>p.trim());
+      if(parts.length>1)return parts.map(p=>p.trim());
+      return raw.trim().split(/\s+/).filter(p=>p);
+    }
+
+    let currentData = null;
+
+    function gen(){
+      const number=getVal('tNumber')||'VIP520';
+      const date=getVal('tDate')||'2026.2.5';
+      const boss=getVal('tBoss')||'署名';
+      const peopleRaw=parseInt(getVal('tPeople'))||1;
+      const people=Math.max(1,peopleRaw);
+      const project=getVal('tProject')||'项目名称';
+      const note=getVal('tNote')||'痛将有时 爱必将至';
+      const amount=formatAmount(getVal('tAmount'));
+
+      const allPlayers=parsePlayers(getVal('tPlayer'));
+      
+      currentData={number,date,boss,people,project,note,amount,players:[]};
+      
+      let playerLines='';
+      for(let i=0;i<people;i++){
+        const pname=allPlayers[i]||allPlayers[allPlayers.length-1]||'陪陪名';
+        currentData.players.push(pname);
+        playerLines+=`                          -PLAYER [${pname}]\n`;
+      }
+      playerLines=playerLines.trimEnd();
+
+      const ticketText=`··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ···
+                  𝑳𝒆𝒂𝒗𝒆 𝒕𝒉𝒆 𝒕𝒂𝒃𝒍𝒆 𝒍𝒊𝒔𝒕
+
+编号：${number}
+时间：${date}  
+板宝：${boss}                      人数：${people}
+
+品类                                     选手
+··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ···
+PEOJECT | [${project}]
+${playerLines}
+
+备注：${note}
+
+                     账单合计：￥ ${amount}
+··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ···
+          𝗧𝗔𝗦𝗧𝗘 𝗧𝗛𝗘 𝗠𝗢𝗠𝗘𝗡𝗧
+                 𝕏𝕐𝕏 ℂ𝕃𝕌𝔹
+··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ···`;
+
+      document.getElementById('tOutput').textContent=ticketText;
+    }
+
+    function clearForm(){
+      'tNumber,tDate,tBoss,tPeople,tProject,tPlayer,tNote,tAmount'.split(',').forEach(id=>setVal(id,''));
+      document.getElementById('tOutput').innerHTML='<span class="placeholder-note">尚未生成小票，请填写信息后点击"生成小票"</span>';
+      currentData=null;
+    }
+
+    // ========== 复制为图片 ==========
+    async function copyAsImage(){
+      if(!currentData){
+        alert('请先生成小票再复制图片');
+        return;
+      }
+
+      const canvas=document.getElementById('imageCanvas');
+      const ctx=canvas.getContext('2d');
+
+      const ratio=240/253;
+      const scale=3;
+      const baseW=240;
+      const extraPlayers=Math.max(0,currentData.players.length-1);
+      const baseH=390+extraPlayers*Math.round(16*ratio);
+      const W=baseW*scale;
+      const H=baseH*scale;
+
+      canvas.width=W;
+      canvas.height=H;
+      ctx.scale(scale,scale);
+
+      const COLORS={
+        paper:'#faf6ef',
+        ink:'#2c2822',
+        gray:'#88807a',
+        lightGray:'#b5aea6',
+        accent:'#c0392b',
+        darkAccent:'#8e2a1e'
+      };
+
+      const LM=Math.round(16*ratio);
+      const RM=Math.round(16*ratio);
+      const LINE_H=Math.round(16*ratio);
+      const BW=baseW;
+
+      ctx.fillStyle=COLORS.paper;
+      ctx.fillRect(0,0,BW,baseH);
+
+      function drawText(text,x,y,opts={}){
+        const {size=12,family="'Courier New', monospace",color=COLORS.ink,align='left',baseline='top',weight='normal'}=opts;
+        const scaledSize=Math.round(size*ratio);
+        ctx.save();ctx.font=`${weight} ${scaledSize}px ${family}`;ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline=baseline;ctx.fillText(text,x,y);ctx.restore();
+      }
+
+      function drawDivider(y,char='─',count=39){
+        drawText(char.repeat(count),LM,y,{size:Math.round(9*ratio),color:COLORS.lightGray,align:'left'});
+      }
+
+      function drawKeyValue(key,value,y,opts={}){
+        const {keyColor=COLORS.gray,valueColor=COLORS.ink,keySize=10,valueSize=11}=opts;
+        const sk=Math.round(keySize*ratio),sv=Math.round(valueSize*ratio);
+        drawText(key,LM,y,{size:sk,color:keyColor,align:'left'});
+        ctx.save();ctx.font=`${sv}px 'Courier New', monospace`;const vw=ctx.measureText(value).width;ctx.restore();
+        drawText(value,BW-RM-vw,y,{size:sv,color:valueColor,align:'left'});
+      }
+
+      // ===== 0. 大标题：RECEIPT（字号17，微软雅黑，加粗） =====
+      let y=Math.round(18*ratio);
+      const receiptSize=Math.round(17*ratio);
+      drawText('RECEIPT',BW/2,y,{size:receiptSize,family:"'Microsoft YaHei', '微软雅黑', sans-serif",color:'#1a1714',align:'center',weight:'bold'});
+      y+=Math.round(46*ratio);
+
+      // ===== 1. 头部信息 =====
+      drawKeyValue('编号：',currentData.number,y);y+=LINE_H+2;
+      drawKeyValue('时间：',currentData.date,y);y+=LINE_H+2;
+      drawKeyValue('板宝：',currentData.boss,y);y+=LINE_H+2;
+      drawKeyValue('人数：',String(currentData.people),y,{valueSize:12});y+=LINE_H+Math.round(6*ratio);
+
+      // ===== 2. 分割线 =====
+      drawDivider(y);y+=LINE_H+2;
+
+      // ===== 3. 表头 =====
+      const thSize=Math.round(9*ratio);
+      drawText('品类',LM,y,{size:thSize,color:COLORS.gray});
+      drawText('选手',BW-RM-Math.round(40*ratio),y,{size:thSize,color:COLORS.gray});y+=LINE_H+Math.round(4*ratio);
+
+      // ===== 4. 项目 =====
+      drawText('PEOJECT | ['+currentData.project+']',LM+Math.round(6*ratio),y,{size:Math.round(11*ratio),color:COLORS.ink,weight:'bold'});y+=LINE_H+Math.round(4*ratio);
+
+      // 陪陪列表
+      const pSize=Math.round(10*ratio);
+      for(let i=0;i<currentData.players.length;i++){
+        const pt='-PLAYER ['+currentData.players[i]+']';
+        ctx.save();ctx.font=`${pSize}px "Courier New", monospace`;const tw=ctx.measureText(pt).width;ctx.restore();
+        drawText(pt,BW-RM-tw,y,{size:pSize,color:'#4a443e'});y+=LINE_H+2;
+      }
+      y+=Math.round(6*ratio);
+
+      // ===== 5. 备注 =====
+      drawText('备注：'+currentData.note,LM,y,{size:Math.round(10*ratio),color:COLORS.accent,weight:'bold'});y+=LINE_H+Math.round(6*ratio);
+
+      // ===== 6. 分割线 =====
+      drawDivider(y);y+=LINE_H+Math.round(6*ratio);
+
+      // ===== 7. 账单合计 =====
+      drawText('账单合计：',LM,y,{size:Math.round(12*ratio),color:COLORS.ink,weight:'bold'});
+      const amount='¥ '+currentData.amount;
+      const amtSize=Math.round(18*ratio);
+      ctx.save();ctx.font=`bold ${amtSize}px "Courier New", monospace`;const aw=ctx.measureText(amount).width;ctx.restore();
+      drawText(amount,BW-RM-aw,y-Math.round(2*ratio),{size:amtSize,color:COLORS.darkAccent,weight:'bold'});y+=Math.round(36*ratio);
+
+      // ===== 8. 底部品牌区 =====
+      const dotSize=Math.round(8*ratio);
+      const tasteSize=Math.round(11*ratio);
+      drawText('• • • • • •',BW/2,y,{size:dotSize,color:COLORS.lightGray,align:'center'});y+=Math.round(20*ratio);
+      drawText('TASTE THE MOMENT',BW/2,y,{size:tasteSize,family:"'Arial Black',sans-serif",color:'#1a1714',align:'center',weight:'900'});y+=Math.round(22*ratio);
+      drawText('XYX CLUB',BW/2,y,{size:Math.round(10*ratio),family:"'Arial',sans-serif",color:COLORS.gray,align:'center',weight:'600'});y+=Math.round(14*ratio);
+      drawText('~ 感谢光临 ~',BW/2,y,{size:dotSize,color:COLORS.lightGray,align:'center'});
+
+      // ===== 9. 纹理 =====
+      for(let i=0;i<600;i++){
+        const rx=Math.random()*BW,ry=Math.random()*baseH;
+        ctx.fillStyle=`rgba(44,40,34,${Math.random()*0.06})`;
+        ctx.fillRect(rx,ry,Math.random()*1.5,Math.random()*1.5);
+      }
+      const gradient=ctx.createRadialGradient(BW/2,baseH/2,Math.round(60*ratio),BW/2,baseH/2,Math.round(200*ratio));
+      gradient.addColorStop(0,'rgba(0,0,0,0)');gradient.addColorStop(1,'rgba(0,0,0,0.04)');
+      ctx.fillStyle=gradient;ctx.fillRect(0,0,BW,baseH);
+
+      // ===== 复制 =====
+      try{
+        canvas.toBlob(async(blob)=>{
+          await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+          alert('✅ 图片已复制到剪贴板，可直接粘贴发送');
+        });
+      }catch(e){
+        const link=document.createElement('a');
+        link.download='结单小票.png';link.href=canvas.toDataURL('image/png');link.click();
+        alert('已自动下载图片（当前浏览器不支持直接复制图片）');
+      }
+    }
   </script>
 </body>
 </html>
