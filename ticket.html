@@ -195,11 +195,11 @@
       for(let i=0;i<people;i++){
         const pname=allPlayers[i]||allPlayers[allPlayers.length-1]||'陪陪名';
         currentData.players.push(pname);
-        playerLines+=`                          -PLAYER [${pname}]\n`;
+        playerLines+=`                          -ᴘʟᴀʏᴇʀ [${pname}]\n`;
       }
       playerLines=playerLines.trimEnd();
 
-      const ticketText=`··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ···
+      const ticketText=`⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯
                   𝑳𝒆𝒂𝒗𝒆 𝒕𝒉𝒆 𝒕𝒂𝒃𝒍𝒆 𝒍𝒊𝒔𝒕
 
 编号：${number}
@@ -207,17 +207,17 @@
 板宝：${boss}                      人数：${people}
 
 品类                                     选手
-··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ···
-PEOJECT | [${project}]
+⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯
+ᴘᴇᴏᴊᴇᴄᴛ | [${project}]
 ${playerLines}
 
 备注：${note}
 
                      账单合计：￥ ${amount}
-··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ···
+⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯
           𝗧𝗔𝗦𝗧𝗘 𝗧𝗛𝗘 𝗠𝗢𝗠𝗘𝗡𝗧
                  𝕏𝕐𝕏 ℂ𝕃𝕌𝔹
-··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ··· ···`;
+⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯`;
 
       document.getElementById('tOutput').textContent=ticketText;
     }
@@ -285,7 +285,7 @@ ${playerLines}
         drawText(value,BW-RM-vw,y,{size:sv,color:valueColor,align:'left'});
       }
 
-      // ===== 0. 大标题：RECEIPT（字号17，微软雅黑，加粗） =====
+      // ===== 0. 大标题：RECEIPT =====
       let y=Math.round(18*ratio);
       const receiptSize=Math.round(17*ratio);
       drawText('RECEIPT',BW/2,y,{size:receiptSize,family:"'Microsoft YaHei', '微软雅黑', sans-serif",color:'#1a1714',align:'center',weight:'bold'});
@@ -306,12 +306,12 @@ ${playerLines}
       drawText('选手',BW-RM-Math.round(40*ratio),y,{size:thSize,color:COLORS.gray});y+=LINE_H+Math.round(4*ratio);
 
       // ===== 4. 项目 =====
-      drawText('PEOJECT | ['+currentData.project+']',LM+Math.round(6*ratio),y,{size:Math.round(11*ratio),color:COLORS.ink,weight:'bold'});y+=LINE_H+Math.round(4*ratio);
+      drawText('ᴘᴇᴏᴊᴇᴄᴛ | ['+currentData.project+']',LM+Math.round(6*ratio),y,{size:Math.round(11*ratio),color:COLORS.ink,weight:'bold'});y+=LINE_H+Math.round(4*ratio);
 
       // 陪陪列表
       const pSize=Math.round(10*ratio);
       for(let i=0;i<currentData.players.length;i++){
-        const pt='-PLAYER ['+currentData.players[i]+']';
+        const pt='-ᴘʟᴀʏᴇʀ ['+currentData.players[i]+']';
         ctx.save();ctx.font=`${pSize}px "Courier New", monospace`;const tw=ctx.measureText(pt).width;ctx.restore();
         drawText(pt,BW-RM-tw,y,{size:pSize,color:'#4a443e'});y+=LINE_H+2;
       }
