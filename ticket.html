@@ -80,7 +80,6 @@
     .footer-message { text-align: center; margin-top: 8px; font-size: 14px; color: #222; border-top: 1px dotted #aaa; padding-top: 8px; font-weight: 700; font-style: italic; }
     .back-btn-preview, .copy-btn-preview { text-align: center; margin-top: 16px; }
     .copy-btn-preview .btn { background: #1a1a1a; color: #fff; padding: 0.6rem 2rem; border: none; }
-    #imageCanvas { display: none; }
     .footer-note { font-size: 0.7rem; color: #999; text-align: center; line-height: 1.5; margin-top: 0.5rem; }
     hr { border: 0.5px solid #ddd; margin: 1.2rem 0; }
     .hint-text { font-size: 0.65rem; color: #999; margin-top: 0.1rem; }
@@ -112,10 +111,8 @@
   <div class="copy-btn-preview"><button class="btn" onclick="copyAsImage()">📋 复制图片</button></div>
   <div class="back-btn-preview"><button class="btn" onclick="goBackToInput()">↩ 返回修改</button></div>
 </div>
-<canvas id="imageCanvas"></canvas>
 
 <script>
-// Logo预加载
 const logoImg=new Image();logoImg.src='logo.jpg';
 logoImg.onerror=function(){this.src='https://s3.bmp.ovh/2026/07/31/BXOkPlxv.png';};
 let pinyinReady=false;
@@ -147,23 +144,29 @@ async function copyAsImage(){
   const ticket=document.getElementById('ticketPreview');
   if(!ticket||!ticket.innerHTML.trim()){alert('请先生成预览');return;}
 
-  // 每次全新截取，不缓存
-  const screenshotCanvas=await html2canvas(ticket,{
-    backgroundColor:'#ffffff',scale:3,useCORS:true,allowTaint:true,logging:false,removeContainer:true
+  // ★ 每次创建全新的canvas来截图
+  const freshCanvas=document.createElement('canvas');
+  const result=await html2canvas(ticket,{
+    canvas:freshCanvas,
+    backgroundColor:'#ffffff',
+    scale:3,
+    useCORS:true,
+    allowTaint:true,
+    logging:false
   });
   
   // 手动绘制Logo
   if(logoImg.complete&&logoImg.naturalWidth>0){
-    const ctx2=screenshotCanvas.getContext('2d');
+    const ctx2=result.getContext('2d');
     const nr=logoImg.naturalWidth/logoImg.naturalHeight;
     const lh=144;const lw=Math.round(lh*nr);
-    ctx2.drawImage(logoImg,(screenshotCanvas.width-lw)/2,130,lw,lh);
+    ctx2.drawImage(logoImg,(result.width-lw)/2,130,lw,lh);
   }
 
-  screenshotCanvas.toBlob(function(blob){
+  result.toBlob(function(blob){
     try{
-      navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(function(){alert('✅ 图片已复制到剪贴板');}).catch(function(){const a=document.createElement('a');a.download='结单小票.png';a.href=screenshotCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');});
-    }catch(e){const a=document.createElement('a');a.download='结单小票.png';a.href=screenshotCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');}
+      navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(function(){alert('✅ 图片已复制到剪贴板');}).catch(function(){const a=document.createElement('a');a.download='结单小票.png';a.href=result.toDataURL('image/png');a.click();alert('已自动下载图片');});
+    }catch(e){const a=document.createElement('a');a.download='结单小票.png';a.href=result.toDataURL('image/png');a.click();alert('已自动下载图片');}
   },'image/png');
 }
 function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
