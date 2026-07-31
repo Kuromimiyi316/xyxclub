@@ -4,151 +4,165 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
   <title>结单小票 · 幸运星俱乐部</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: linear-gradient(135deg, #fdf6f0 0%, #f5efe8 50%, #faf5f0 100%); font-family: system-ui, 'Segoe UI', Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1.5rem; }
-    .card { max-width: 780px; width: 100%; background: #fff; border-radius: 2.5rem; box-shadow: 0 25px 45px rgba(0,0,0,0.08); padding: 2rem 2rem 2.2rem; border: 1px solid #ede7e0; }
-    h1 { font-size: 1.8rem; font-weight: 650; color: #3b2e24; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
-    .subtitle { font-size: 0.9rem; color: #8b7a6b; margin-bottom: 1.5rem; }
-    .section-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.4rem; padding-bottom: 0.9rem; border-bottom: 2px dashed #e8ddd0; }
-    .back-btn { margin-left: auto; background: transparent; border: 1.5px solid #d6c7b8; padding: 0.45rem 1.1rem; border-radius: 2rem; font-size: 0.85rem; color: #5e4e3c; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; }
-    .back-btn:hover { background: #ede3d8; border-color: #b39274; }
-    .form-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
-    .form-row { display: flex; flex-wrap: wrap; gap: 1rem; }
-    .form-row .input-group { flex: 1 1 calc(50% - 0.5rem); }
-    .input-group { display: flex; flex-direction: column; gap: 0.35rem; }
-    label { font-size: 0.85rem; font-weight: 550; color: #5e4e3c; }
-    input { width: 100%; padding: 0.8rem 1.1rem; border: 1.5px solid #e0d6cc; border-radius: 1.3rem; font-size: 0.95rem; background: #fcfaf8; color: #2e241a; }
-    input:focus { outline: none; border-color: #b39274; box-shadow: 0 0 0 4px rgba(179,146,116,0.12); background: #fff; }
-    .button-row { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.5rem 0 1.5rem; }
-    .btn { background: #f0ebe4; border: none; padding: 0.75rem 1.6rem; border-radius: 2.5rem; font-weight: 550; font-size: 0.9rem; color: #4d3a2c; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; }
-    .btn-primary { background: #b39274; color: white; }
-    .btn-primary:hover { background: #9e7d60; }
-    .btn:hover { background: #e5d9cc; }
-    .output-section { margin-top: 1rem; }
-    .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem; }
-    .output-header span { font-weight: 600; color: #3b2e24; font-size: 1rem; }
-    .output-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .copy-btn { background: transparent; border: 1px solid #d6c7b8; padding: 0.4rem 1rem; border-radius: 2rem; font-size: 0.8rem; color: #5e4e3c; cursor: pointer; display: flex; align-items: center; gap: 0.25rem; }
-    .copy-btn:hover { background: #ede3d8; }
-    .output-box { background: #faf8f5; border: 1.5px solid #e2d6ca; border-radius: 1.5rem; padding: 1.3rem 1.4rem; font-family: 'SF Mono',monospace; font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; color: #2e241a; min-height: 150px; max-height: 450px; overflow-y: auto; }
-    .placeholder-note { color: #b9a18b; font-style: italic; }
-    hr { border: 0.5px solid #e3d9ce; margin: 1rem 0 0.6rem; }
-    .footer-note { font-size: 0.7rem; color: #b9a18b; text-align: right; line-height: 1.5; }
+    body { background: #8a8276; font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 2rem; }
+    .input-panel { max-width: 700px; width: 100%; background: #fff; border-radius: 1.2rem; box-shadow: 0 15px 30px rgba(0,0,0,0.2); padding: 2.5rem 2.5rem 2.5rem; border: 1px solid #ccc; display: block; min-height: 80vh; }
+    .input-panel.hidden { display: none; }
+    h1 { font-size: 1.4rem; font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: 0.6rem; font-family: 'Courier New', monospace; }
+    .subtitle { font-size: 0.85rem; color: #666; text-align: center; margin-bottom: 2rem; }
+    .form-grid { display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 1.5rem; }
+    .form-row { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+    .form-row .input-group { flex: 1 1 calc(50% - 0.6rem); }
+    .input-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    label { font-size: 0.82rem; font-weight: 600; color: #444; font-family: 'Courier New', monospace; }
+    input, select { width: 100%; padding: 0.7rem 1rem; border: 1px solid #ccc; border-radius: 0.6rem; font-size: 0.9rem; background: #fefefe; color: #1a1a1a; font-family: 'Courier New', monospace; }
+    input:focus, select:focus { outline: none; border-color: #888; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+    .button-row { display: flex; gap: 1rem; margin: 1.2rem 0 0; }
+    .btn { background: #eee; border: 1px solid #ccc; padding: 0.7rem 1.8rem; border-radius: 2rem; font-weight: 600; font-size: 0.85rem; color: #333; cursor: pointer; font-family: 'Courier New', monospace; }
+    .btn-primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .btn-primary:hover { background: #333; }
+    .btn:hover { background: #ddd; }
+    .rows-container { margin-bottom: 0.5rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .row-item { display: flex; gap: 0.8rem; align-items: flex-end; flex-wrap: wrap; padding: 0.9rem; background: #fafafa; border-radius: 0.7rem; border: 1px solid #eee; }
+    .row-item .input-group { flex: 1; min-width: 90px; }
+    .row-item .input-group.small { flex: 0.5; min-width: 60px; }
+    .add-row-btn { font-size: 0.8rem; color: #555; cursor: pointer; background: none; border: 1px dashed #ccc; padding: 0.5rem 1.2rem; border-radius: 1rem; font-family: 'Courier New', monospace; margin-top: 0.3rem; display: inline-block; }
+    .add-row-btn:hover { background: #f5f5f5; }
+    .remove-row-btn { font-size: 0.75rem; color: #c0392b; cursor: pointer; background: none; border: none; padding: 0.3rem 0.5rem; align-self: flex-end; margin-bottom: 0.3rem; }
+    .preview-panel { display: none; max-width: 440px; width: 100%; }
+    .preview-panel.show { display: block; }
+    .ticket { max-width: 440px; width: 100%; background: #ffffff; border-radius: 10px 10px 6px 6px; box-shadow: 0 6px 18px rgba(0,0,0,0.3); padding: 24px 18px 20px; position: relative; border: 1px solid #aaaaaa; color: #1a1a1a; }
+    .ticket::after { content: ''; position: absolute; bottom: -12px; left: 0; width: 100%; height: 22px; background: repeating-linear-gradient(45deg, #8a8276 0px, #8a8276 8px, transparent 8px, transparent 16px); background-size: 16px 16px; opacity: 0.7; pointer-events: none; }
+    .top-stars { display: flex; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 6px; }
+    .top-stars span { background: #222; color: #fff; padding: 0 12px; border-radius: 30px; font-size: 14px; font-weight: 600; }
+    .top-stars .star-mid { background: transparent; color: #111; font-size: 20px; padding: 0; }
+    .vip-header { text-align: center; border-bottom: 2px dashed #888; padding-bottom: 12px; margin-bottom: 10px; }
+    .logo-area img { display: block; width: 90px; margin: 0 auto; }
+    .vip-header .sub-title { font-size: 14px; color: #222; background: #e0e0e0; display: inline-block; padding: 2px 16px; border-radius: 30px; margin-top: 6px; font-weight: 700; border: 1px solid #aaa; }
+    .vip-header .welcome { font-size: 15px; margin-top: 6px; color: #1a1a1a; font-weight: 500; border-top: 1px dotted #999; padding-top: 8px; }
+    .staff-member { display: flex; justify-content: space-between; font-size: 15px; padding: 6px; border-bottom: 1px dashed #999; margin-bottom: 8px; background: #f2f2f2; border-radius: 4px; }
+    .staff-member .highlight { color: #000; font-weight: 700; }
+    .thankyou-row { text-align: center; font-size: 15px; font-weight: 700; color: #000; padding: 8px; border-bottom: 1px solid #bbb; margin-bottom: 10px; background: #f6f6f6; border-radius: 4px; border: 1px solid #ddd; }
+    .timestamp { text-align: right; font-size: 14px; color: #222; margin-bottom: 12px; font-weight: 500; border-bottom: 1px dashed #aaa; padding-bottom: 8px; }
+    .table-receipt { width: 100%; font-size: 13px; border-collapse: collapse; margin: 4px 0 8px 0; color: #000; }
+    .table-receipt th { font-weight: 800; font-size: 13px; border-bottom: 2px solid #333; padding: 4px 0 6px; white-space: nowrap; }
+    .table-receipt th:nth-child(1) { text-align: left; }
+    .table-receipt th:nth-child(2) { text-align: center; padding-left: 30px; }
+    .table-receipt th:nth-child(3) { text-align: center; }
+    .table-receipt th:nth-child(4) { text-align: right; }
+    .table-receipt td { padding: 3px 0; vertical-align: middle; }
+    .table-receipt .c1 { text-align: left; }
+    .table-receipt .c1 .num { color: #555; font-weight: 600; font-size: 11px; display: block; }
+    .table-receipt .c1 .name { font-weight: 700; color: #000; font-size: 12px; display: block; }
+    .table-receipt .c2 { text-align: center; padding-left: 30px; }
+    .table-receipt .c3 { text-align: center; }
+    .table-receipt .c4 { text-align: right; font-weight: 700; }
+    .divider-dash { border: none; border-top: 2px dashed #aaa; margin: 12px 0 10px 0; }
+    .total-area { text-align: right; font-size: 17px; font-weight: 700; padding: 6px 0 4px; border-bottom: 1px solid #888; margin-bottom: 6px; }
+    .total-line { display: flex; justify-content: flex-end; gap: 20px; }
+    .total-amount { font-weight: 800; color: #000; }
+    .discount-area { text-align: right; font-size: 16px; padding: 4px 0 8px; border-bottom: 2px double #555; margin-bottom: 10px; }
+    .discount-label { font-weight: 600; background: #1a1a1a; color: #fff; padding: 0 10px; border-radius: 30px; font-size: 14px; margin-right: 6px; }
+    .final-price { font-weight: 900; font-size: 20px; color: #000; }
+    .signature-area { display: flex; align-items: baseline; padding: 12px 0 8px; border-top: 1px solid #888; margin-top: 6px; gap: 12px; }
+    .sign-label { font-weight: 600; font-size: 15px; }
+    .sign-line { font-family: 'Dancing Script', cursive; font-size: 27px; font-weight: 700; color: #000; margin-left: 8px; }
+    .footer-loading { margin-top: 18px; text-align: center; font-size: 13px; color: #2a2a2a; border-top: 1px dashed #999; padding-top: 12px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+    .footer-loading .static-dots { display: inline; letter-spacing: 2px; }
+    .footer-loading .ding { font-weight: 800; color: #000; background: #d0d0d0; padding: 0 14px; border-radius: 30px; font-size: 14px; }
+    .footer-message { text-align: center; margin-top: 8px; font-size: 14px; color: #222; border-top: 1px dotted #aaa; padding-top: 8px; font-weight: 700; font-style: italic; }
+    .back-btn-preview, .copy-btn-preview { text-align: center; margin-top: 16px; }
+    .copy-btn-preview .btn { background: #1a1a1a; color: #fff; padding: 0.6rem 2rem; border: none; }
     #imageCanvas { display: none; }
+    .footer-note { font-size: 0.7rem; color: #999; text-align: center; line-height: 1.5; margin-top: 0.5rem; }
+    hr { border: 0.5px solid #ddd; margin: 1.2rem 0; }
+    .hint-text { font-size: 0.65rem; color: #999; margin-top: 0.1rem; }
   </style>
 </head>
 <body>
-<div class="card">
-  <h1>🧾 结单小票</h1>
-  <div class="subtitle">幸运星俱乐部 · 客服专属工具</div>
-  <div class="section-header"><span>🧾</span><span>结单小票</span><a class="back-btn" href="index.html">↩ 返回首页</a></div>
+<div class="input-panel" id="inputPanel">
+  <h1>★ 幸运星俱乐部专属结单小票 ★</h1>
+  <div class="subtitle">客服专属工具</div>
   <div class="form-grid">
-    <div class="form-row"><div class="input-group"><label>🔢 编号</label><input id="tNumber" placeholder="例如：VIP520"></div><div class="input-group"><label>📅 时间</label><input id="tDate" placeholder="例如：2026.2.5"></div></div>
-    <div class="form-row"><div class="input-group"><label>👤 板宝</label><input id="tBoss" placeholder="例如：署名"></div><div class="input-group"><label>👥 人数</label><input id="tPeople" type="number" min="1" placeholder="例如：1"><span style="font-size:0.7rem;color:#b9a18b;">陪陪数量</span></div></div>
-    <div class="input-group"><label>🎯 项目名称</label><input id="tProject" placeholder="例如：手游体验"></div>
-    <div class="input-group"><label>🎮 陪陪名</label><input id="tPlayer" placeholder="例如：啾啾 mia"><span style="font-size:0.7rem;color:#b9a18b;">多个陪陪用空格分隔</span></div>
-    <div class="input-group"><label>📝 备注</label><input id="tNote" placeholder="例如：痛将有时 爱必将至"></div>
-    <div class="input-group"><label>💰 账单合计</label><input id="tAmount" placeholder="例如：88.88"></div>
+    <div class="form-row">
+      <div class="input-group"><label>🧾 接待/派单</label><input id="tStaff" placeholder="例如：晚晚"></div>
+      <div class="input-group"><label>👤 会员</label><input id="tMember" placeholder="例如：兔子宝宝🐰"></div>
+    </div>
+    <div class="input-group">
+      <label>💰 折扣</label>
+      <input id="tDiscount" placeholder="留空=原价">
+      <span class="hint-text">留空或填10表示原价，填8表示8折</span>
+    </div>
+    <div class="rows-container" id="rowsContainer"></div>
+    <span class="add-row-btn" onclick="addRow()">+ 添加一行</span>
   </div>
-  <div class="button-row"><button class="btn btn-primary" onclick="gen()">✨ 生成小票</button><button class="btn" onclick="clearForm()">🧹 清空</button></div>
-  <div class="output-section">
-    <div class="output-header"><span>📄 结单小票</span><div class="output-btns"><button class="copy-btn" onclick="copyText()">📋 复制文本</button><button class="copy-btn" style="border-color:#c8b299;color:#8b6d4b;" onclick="copyImg()">🖼️ 复制图片</button></div></div>
-    <div class="output-box" id="tOutput"><span class="placeholder-note">尚未生成小票</span></div>
+  <div class="button-row">
+    <button class="btn btn-primary" onclick="goToPreview()">✨ 生成预览</button>
+    <button class="btn" onclick="clearForm()">🧹 清空</button>
   </div>
-  <hr><div class="footer-note">幸运星俱乐部 · 客服专属工具<br>Github·Kuromimiyi316，盗名必究</div>
+  <hr>
+  <div class="footer-note">幸运星俱乐部 · 客服专属工具<br>Github·Kuromimiyi316，盗名必究</div>
+</div>
+
+<div class="preview-panel" id="previewPanel">
+  <div class="ticket" id="ticketPreview"></div>
+  <div class="copy-btn-preview"><button class="btn" onclick="copyAsImage()">📋 复制图片</button></div>
+  <div class="back-btn-preview"><button class="btn" onclick="goBackToInput()">↩ 返回修改</button></div>
 </div>
 <canvas id="imageCanvas"></canvas>
 
 <script>
-const logoImg = new Image();
-logoImg.src = 'logo.jpg';
-
-function g(id){ return document.getElementById(id).value.trim(); }
-function s(id,v){ document.getElementById(id).value = v; }
-let data = null;
-
-function gen(){
-  const n=g('tNumber')||'VIP520', d=g('tDate')||'2026.2.5', b=g('tBoss')||'署名';
-  const p=Math.max(1,parseInt(g('tPeople'))||1), pr=g('tProject')||'项目名称';
-  const nt=g('tNote')||'痛将有时 爱必将至';
-  let amt=g('tAmount')||'0.00';
-  amt=amt.replace(/[￥¥元]/g,'').trim();
-  const num=parseFloat(amt); amt=isNaN(num)?amt:num.toFixed(2);
-  const players=(g('tPlayer')||'陪陪名').split(/[\s,，]+/).filter(x=>x);
-  data={n,d,b,p,pr,nt,amt,players:[]};
-  let pl='';
-  for(let i=0;i<p;i++){ const pn=players[i]||players[players.length-1]||'陪陪名'; data.players.push(pn); pl+=`                          -ᴘʟᴀʏᴇʀ [${pn}]\n`; }
-  document.getElementById('tOutput').textContent=`⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯\n                  𝑳𝒆𝒂𝒗𝒆 𝒕𝒉𝒆 𝒕𝒂𝒃𝒍𝒆 𝒍𝒊𝒔𝒕\n\n编号：${n}\n时间：${d}  \n板宝：${b}                      人数：${p}\n\n品类                                     选手\n⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯\nᴘᴇᴏᴊᴇᴄᴛ | [${pr}]\n${pl}\n\n备注：${nt}\n\n                     账单合计：￥ ${amt}\n⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯\n          𝗧𝗔𝗦𝗧𝗘 𝗧𝗛𝗘 𝗠𝗢𝗠𝗘𝗡𝗧\n                 𝕏𝕐𝕏 ℂ𝕃𝕌𝔹\n⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯`;
+const logoImg=new Image();logoImg.src='https://s3.bmp.ovh/2026/07/31/BXOkPlxv.png';
+let pinyinReady=false;
+const script=document.createElement('script');script.src='https://unpkg.com/pinyin-pro@3.18.2/dist/index.js';script.onload=function(){pinyinReady=true;};document.head.appendChild(script);
+const pm={'晚':'Wan','兔':'Tu','子':'Zi','小':'Xiao','优':'You','安':'An','然':'Ran','乐':'Le','天':'Tian','明':'Ming','花':'Hua','月':'Yue','星':'Xing','雨':'Yu','雪':'Xue','风':'Feng','云':'Yun','龙':'Long','王':'Wang','李':'Li','张':'Zhang','刘':'Liu','陈':'Chen','杨':'Yang','赵':'Zhao','周':'Zhou','吴':'Wu','徐':'Xu','孙':'Sun','马':'Ma','朱':'Zhu','胡':'Hu','郭':'Guo','何':'He','高':'Gao','林':'Lin','罗':'Luo','郑':'Zheng','梁':'Liang','谢':'Xie','宋':'Song','唐':'Tang','韩':'Han','曹':'Cao','许':'Xu','邓':'Deng','冯':'Feng','曾':'Zeng','程':'Cheng','蔡':'Cai','彭':'Peng','潘':'Pan','袁':'Yuan','于':'Yu','董':'Dong','余':'Yu','苏':'Su','叶':'Ye','魏':'Wei','蒋':'Jiang','田':'Tian','杜':'Du','丁':'Ding','沈':'Shen','姜':'Jiang','范':'Fan','江':'Jiang','傅':'Fu','钟':'Zhong','卢':'Lu','汪':'Wang','戴':'Dai','崔':'Cui','任':'Ren','陆':'Lu','廖':'Liao','姚':'Yao','方':'Fang','金':'Jin','夏':'Xia','谭':'Tan','韦':'Wei','贾':'Jia','邹':'Zou','石':'Shi','熊':'Xiong','孟':'Meng','秦':'Qin','薛':'Xue','侯':'Hou','雷':'Lei','白':'Bai','段':'Duan','郝':'Hao','孔':'Kong','邵':'Shao','史':'Shi','毛':'Mao','常':'Chang','万':'Wan','顾':'Gu','武':'Wu','康':'Kang','贺':'He','严':'Yan','钱':'Qian','施':'Shi','牛':'Niu','洪':'Hong','爱':'Ai','甜':'Tian','美':'Mei','丽':'Li','文':'Wen','静':'Jing','雅':'Ya','思':'Si','梦':'Meng','晓':'Xiao','婉':'Wan','婷':'Ting','嘉':'Jia','欣':'Xin','怡':'Yi','洁':'Jie','琳':'Lin','瑶':'Yao','倩':'Qian','慧':'Hui','敏':'Min','芳':'Fang','燕':'Yan','萍':'Ping','丹':'Dan','秀':'Xiu','娟':'Juan','莉':'Li','莎':'Sha','菲':'Fei','露':'Lu','晨':'Chen','曦':'Xi','彤':'Tong','萱':'Xuan','若':'Ruo','娜':'Na','玲':'Ling','珍':'Zhen','帅':'Shuai','杰':'Jie','伟':'Wei','强':'Qiang','涛':'Tao','斌':'Bin','超':'Chao','峰':'Feng','辉':'Hui','毅':'Yi','俊':'Jun','翔':'Xiang','宝':'Bao','贝':'Bei','欢':'Huan','喜':'Xi','福':'Fu','贵':'Gui','瑞':'Rui','吉':'Ji','旺':'Wang','财':'Cai','富':'Fu','顺':'Shun','利':'Li','平':'Ping','健':'Jian','幸':'Xing','运':'Yun','好':'Hao'};
+function toEnglish(n){if(!n||!n.trim())return'Member';if(pinyinReady&&window.pinyinPro){try{return window.pinyinPro.pinyin(n,{toneType:'none',type:'array'}).join('');}catch(e){}}let r='';for(let c of n){if(/[\u4e00-\u9fff]/.test(c)){r+=pm[c]||c;}else{r+=c;}}return r||n;}
+function g(id){return document.getElementById(id).value.trim();}
+function s(id,v){document.getElementById(id).value=v;}
+function createRowHTML(i){return`<div class="row-item" data-row="${i}"><div class="input-group"><label>点单类型</label><input class="row-type" placeholder="例如：PC体验"></div><div class="input-group small"><label>陪陪数</label><select class="player-count"><option value="1">1人</option><option value="2">2人</option></select></div><div class="input-group"><label>陪陪1</label><input class="row-player1" placeholder="例如：小优"></div><div class="input-group player2-group" style="display:none;"><label>陪陪2</label><input class="row-player2" placeholder="例如：mia"></div><div class="input-group small"><label>数量</label><input class="row-qty" type="number" min="1" placeholder="1" value="1"></div><div class="input-group small"><label>价格</label><input class="row-price" placeholder="50"></div><button class="remove-row-btn" onclick="removeRow(this)" style="display:${i===0?'none':'inline'}">✕</button></div>`;}
+function addRow(){const c=document.getElementById('rowsContainer');const n=c.querySelectorAll('.row-item').length;const d=document.createElement('div');d.innerHTML=createRowHTML(n);const r=d.firstElementChild;c.appendChild(r);r.querySelector('.player-count').addEventListener('change',function(){togglePlayer2(this);});updateRemoveButtons();}
+function togglePlayer2(s){const r=s.closest('.row-item');r.querySelector('.player2-group').style.display=s.value==='2'?'':'none';if(s.value!=='2')r.querySelector('.row-player2').value='';}
+function removeRow(b){if(document.querySelectorAll('#rowsContainer .row-item').length<=1)return;b.closest('.row-item').remove();updateRemoveButtons();}
+function updateRemoveButtons(){document.querySelectorAll('#rowsContainer .row-item').forEach(r=>{const b=r.querySelector('.remove-row-btn');if(b)b.style.display=document.querySelectorAll('#rowsContainer .row-item').length>1?'inline':'none';});}
+function getRowsData(){const a=[];document.querySelectorAll('#rowsContainer .row-item').forEach(r=>{a.push({type:r.querySelector('.row-type')?.value?.trim()||'项目',count:parseInt(r.querySelector('.player-count')?.value)||1,player1:r.querySelector('.row-player1')?.value?.trim()||'陪陪',player2:r.querySelector('.row-player2')?.value?.trim()||'',qty:parseInt(r.querySelector('.row-qty')?.value)||1,price:parseFloat(r.querySelector('.row-price')?.value?.replace(/[￥¥元]/g,''))||0});});return a;}
+let currentData=null;
+function goToPreview(){
+  const staff=g('tStaff')||'晚晚',member=g('tMember')||'兔子',discountRaw=g('tDiscount'),discount=discountRaw?Math.min(100,Math.max(1,parseInt(discountRaw)||10)):10;
+  const rows=getRowsData();const signature=toEnglish(member),now=new Date(),timeStr=`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}  ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} PM`;
+  let totalAmt=0;rows.forEach(r=>{totalAmt+=r.qty*r.price;});const finalTotal=Math.round(totalAmt*discount/10*100)/100;const showDiscount=!!discountRaw&&discount!==10;
+  currentData={staff,member,discount,rows,totalAmt,finalTotal,signature,timeStr,showDiscount};
+  let tableRows='',rn=0;rows.forEach(r=>{rn++;if(r.count===1){tableRows+=`<tr><td class="c1"><span class="num">#${String(rn).padStart(2,'0')}</span><span class="name">${r.type}</span></td><td class="c2">${r.player1}</td><td class="c3">${r.qty}</td><td class="c4">¥ ${r.price.toFixed(0)}</td></tr>`;}else{tableRows+=`<tr><td class="c1" rowspan="2"><span class="num">#${String(rn).padStart(2,'0')}</span><span class="name">${r.type}</span></td><td class="c2">${r.player1}</td><td class="c3" rowspan="2">${r.qty}</td><td class="c4" rowspan="2">¥ ${r.price.toFixed(0)}</td></tr><tr><td class="c2">${r.player2||'陪陪2'}</td></tr>`;}});
+  const discountHTML=showDiscount?`<div class="discount-area"><span class="discount-label">实付 ${discount}折</span><span class="final-price">¥ ${finalTotal.toFixed(0)}</span></div>`:'';
+  document.getElementById('ticketPreview').innerHTML=`<div class="top-stars"><span>★ ★</span><span class="star-mid">✦ ✦</span><span>★ ★</span></div><div class="vip-header"><div class="logo-area"><img src="https://s3.bmp.ovh/2026/07/31/BXOkPlxv.png" alt="Logo"></div><div class="sub-title">★ 幸运星俱乐部专属结单小票 ★</div><div class="welcome">WELCOME TO THE XYX CLUB</div></div><div class="staff-member"><span>🧾 接待/派单：<span class="highlight">${staff}</span></span><span>👤 会员：<span class="highlight">${member}</span></span></div><div class="thankyou-row">×××感谢宝宝对幸运星的支持与喜爱×××</div><div class="timestamp">⏱ ${timeStr}</div><table class="table-receipt"><thead><tr><th>点单类型</th><th>陪陪</th><th>数量</th><th>价格</th></tr></thead><tbody>${tableRows}</tbody></table><hr class="divider-dash"><div class="total-area"><div class="total-line"><span>合计</span><span class="total-amount">¥ ${totalAmt.toFixed(0)}</span></div></div>${discountHTML}<div class="signature-area"><span class="sign-label">会员签名：</span><span class="sign-line">${signature}</span></div><div class="footer-loading"><span>您的小票正在加载中 <span class="static-dots">...</span></span><span class="ding">叮！小票出炉啦！</span></div><div class="footer-message">Hope to see you next time</div>`;
+  document.getElementById('inputPanel').classList.add('hidden');document.getElementById('previewPanel').classList.add('show');window.scrollTo(0,0);
 }
-
-function clearForm(){ 'tNumber,tDate,tBoss,tPeople,tProject,tPlayer,tNote,tAmount'.split(',').forEach(id=>s(id,'')); document.getElementById('tOutput').innerHTML='<span class="placeholder-note">尚未生成小票</span>'; data=null; }
-
-async function copyText(){
-  const el=document.getElementById('tOutput'); const t=el.textContent||'';
-  if(!t.trim()||el.querySelector('.placeholder-note')){alert('请先生成小票');return;}
-  try{await navigator.clipboard.writeText(t);alert('✅ 文本已复制');}catch(e){alert('复制失败，请手动选择');}
+function goBackToInput(){document.getElementById('previewPanel').classList.remove('show');document.getElementById('inputPanel').classList.remove('hidden');window.scrollTo(0,0);}
+async function copyAsImage(){
+  if(!currentData){alert('请先生成预览');return;}if(!logoImg.complete){await new Promise(r=>{logoImg.onload=r;});}
+  const canvas=document.getElementById('imageCanvas'),ctx=canvas.getContext('2d');const scale=3,baseW=420,LM=24,RM=24,LH=22;
+  let totalRows=0;currentData.rows.forEach(r=>{totalRows+=r.count;});const logoH=logoImg.naturalWidth>0?40:0;const discountH=currentData.showDiscount?36:0;const baseH=560+totalRows*LH+logoH+discountH+40;
+  canvas.width=baseW*scale;canvas.height=baseH*scale;ctx.scale(scale,scale);ctx.fillStyle='#fff';ctx.fillRect(0,0,baseW,baseH);
+  function dt(t,x,y,o={}){const{s=12,f="'Courier New',monospace",c='#1a1a1a',a='left',b='top',w='normal'}=o;ctx.save();ctx.font=`${w} ${s}px ${f}`;ctx.fillStyle=c;ctx.textAlign=a;ctx.textBaseline=b;ctx.fillText(t,x,y);ctx.restore();}
+  function fl(y){ctx.strokeStyle='#ccc';ctx.lineWidth=0.5;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(LM,y);ctx.lineTo(baseW-RM,y);ctx.stroke();ctx.setLineDash([]);}
+  let y=24;dt('★ ★',LM,y,{s:11,c:'#000'});dt('✦ ✦',baseW/2,y,{s:11,c:'#000',a:'center'});dt('★ ★',baseW-RM,y,{s:11,c:'#000',a:'right'});y+=18;
+  if(logoImg.naturalWidth>0){const nr=logoImg.naturalWidth/logoImg.naturalHeight,lh=40,lw=Math.round(lh*nr);ctx.drawImage(logoImg,baseW/2-lw/2,y,lw,lh);y+=lh+8;}
+  dt('★ 幸运星俱乐部专属结单小票 ★',baseW/2,y,{s:11,c:'#000',a:'center',w:'bold'});y+=18;dt('WELCOME TO THE XYX CLUB',baseW/2,y,{s:10,c:'#333',a:'center'});y+=24;
+  ctx.fillStyle='#f2f2f2';ctx.fillRect(LM-4,y-2,baseW-LM-RM+8,26);dt(`🧾 接待/派单：${currentData.staff}`,LM+4,y+2,{s:12,c:'#000',w:'bold'});dt(`👤 会员：${currentData.member}`,baseW-RM-100,y+2,{s:12,c:'#000',w:'bold'});y+=32;
+  ctx.fillStyle='#f6f6f6';ctx.fillRect(LM-4,y-2,baseW-LM-RM+8,26);dt('×××感谢宝宝对幸运星的支持与喜爱×××',baseW/2,y+2,{s:11,c:'#000',a:'center',w:'bold'});y+=32;
+  dt(`⏱ ${currentData.timeStr}`,baseW-RM,y,{s:10,c:'#333',a:'right'});y+=22;fl(y);y+=8;
+  const c1=LM,c2=LM+150,c3=LM+260,c4=baseW-RM;dt('点单类型',c1,y,{s:10,c:'#000',w:'bold'});dt('陪陪',c2,y,{s:10,c:'#000',w:'bold',a:'center'});dt('数量',c3,y,{s:10,c:'#000',w:'bold',a:'center'});dt('价格',c4,y,{s:10,c:'#000',w:'bold',a:'right'});y+=8;fl(y);y+=10;
+  let rn=0;currentData.rows.forEach(r=>{rn++;dt(`#${String(rn).padStart(2,'0')}`,c1,y,{s:9,c:'#555'});dt(r.type,c1,y+LH/2,{s:10,c:'#000',w:'bold'});if(r.count===1){dt(r.player1,c2,y+LH/2,{s:10,c:'#000',a:'center'});dt(String(r.qty),c3,y+LH/2,{s:10,c:'#000',a:'center'});dt(`¥ ${r.price.toFixed(0)}`,c4,y+LH/2,{s:10,c:'#000',w:'bold',a:'right'});y+=LH+6;}else{dt(r.player1,c2,y,{s:10,c:'#000',a:'center'});dt(String(r.qty),c3,y+LH/2,{s:10,c:'#000',a:'center'});dt(`¥ ${r.price.toFixed(0)}`,c4,y+LH/2,{s:10,c:'#000',w:'bold',a:'right'});y+=LH;dt(r.player2,c2,y,{s:10,c:'#000',a:'center'});y+=LH+6;}});
+  y+=4;fl(y);y+=10;dt('合计',baseW-RM-160,y,{s:13,c:'#000'});dt(`¥ ${currentData.totalAmt.toFixed(0)}`,baseW-RM,y,{s:14,c:'#000',w:'bold',a:'right'});y+=24;
+  if(currentData.showDiscount){ctx.fillStyle='#1a1a1a';ctx.fillRect(c1+190,y-2,50,20);dt(`实付 ${currentData.discount}折`,c1+194,y+1,{s:9,c:'#fff',w:'bold'});dt(`¥ ${currentData.finalTotal.toFixed(0)}`,baseW-RM,y+1,{s:16,c:'#000',w:'bold',a:'right'});y+=30;}
+  fl(y);y+=12;dt('会员签名：',LM,y,{s:12,c:'#000'});dt(currentData.signature,LM+100,y+4,{s:22,f:"'Dancing Script',cursive",c:'#000',w:'bold'});y+=44;fl(y);y+=12;
+  dt('您的小票正在加载中 ...',baseW/2-30,y,{s:9,c:'#333',a:'center'});dt('叮！小票出炉啦！',baseW/2+90,y,{s:9,c:'#000',w:'bold',a:'center'});y+=20;dt('Hope to see you next time',baseW/2,y,{s:10,c:'#333',a:'center',w:'bold'});y+=16;
+  const sawH=16,sawW=8;ctx.fillStyle='#8a8276';ctx.beginPath();for(let x=0;x<=baseW;x+=sawW){ctx.lineTo(x,baseH-sawH/2);ctx.lineTo(x+sawW/2,baseH);ctx.lineTo(x+sawW,baseH-sawH/2);}ctx.lineTo(baseW,baseH-sawH);ctx.lineTo(0,baseH-sawH);ctx.closePath();ctx.fill();
+  try{canvas.toBlob(async(blob)=>{await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);alert('✅ 图片已复制到剪贴板');},'image/png');}catch(e){const link=document.createElement('a');link.download='结单小票.png';link.href=canvas.toDataURL('image/png');link.click();alert('已自动下载图片');}
 }
-
-async function copyImg(){
-  if(!data){alert('请先生成小票');return;}
-  const canvas=document.getElementById('imageCanvas'),ctx=canvas.getContext('2d');
-  const ratio=240/253,scale=3,baseW=240;
-  const extraPlayers=Math.max(0,data.players.length-1);
-  const logoH=(logoImg.complete&&logoImg.naturalWidth>0)?Math.round(56*ratio):0;
-  const baseH=390+extraPlayers*Math.round(16*ratio)+logoH+Math.round(32*ratio);
-  canvas.width=baseW*scale;canvas.height=baseH*scale;ctx.scale(scale,scale);
-
-  const BG='#000000';
-  const C={paper:BG,ink:'#e0d6c8',gray:'#999590',lightGray:'#555',accent:'#e06050',darkAccent:'#e0a088'};
-  const LM=Math.round(16*ratio),RM=Math.round(16*ratio),LH=Math.round(16*ratio),BW=baseW;
-  ctx.fillStyle=BG;ctx.fillRect(0,0,BW,baseH);
-  function dt(t,x,y,o={}){
-    const {s=12,f="'Courier New',monospace",c=C.ink,a='left',b='top',w='normal'}=o;
-    ctx.save();ctx.font=`${w} ${Math.round(s*ratio)}px ${f}`;ctx.fillStyle=c;ctx.textAlign=a;ctx.textBaseline=b;ctx.fillText(t,x,y);ctx.restore();
-  }
-  function dd(y){dt('─'.repeat(39),LM,y,{s:9,c:C.lightGray});}
-  function dkv(k,v,y,o={}){
-    const {kc=C.gray,vc=C.ink,ks=10,vs=11}=o;
-    dt(k,LM,y,{s:ks,c:kc});ctx.save();ctx.font=`${Math.round(vs*ratio)}px 'Courier New',monospace`;const vw=ctx.measureText(v).width;ctx.restore();
-    dt(v,BW-RM-vw,y,{s:vs,c:vc});
-  }
-  let y=Math.round(18*ratio);
-  dt('RECEIPT',BW/2,y,{s:17,f:"'Microsoft YaHei',sans-serif",c:'#f0e8d8',a:'center',w:'bold'});y+=Math.round(46*ratio);
-  dkv('编号：',data.n,y);y+=LH+2;dkv('时间：',data.d,y);y+=LH+2;dkv('板宝：',data.b,y);y+=LH+2;dkv('人数：',String(data.p),y,{vs:12});y+=LH+Math.round(6*ratio);
-  dd(y);y+=LH+2;
-  dt('品类',LM,y,{s:9,c:C.gray});dt('选手',BW-RM-Math.round(40*ratio),y,{s:9,c:C.gray});y+=LH+Math.round(4*ratio);
-  dt('ᴘᴇᴏᴊᴇᴄᴛ | ['+data.pr+']',LM+Math.round(6*ratio),y,{s:11,c:'#f0e8d8',w:'bold'});y+=LH+Math.round(4*ratio);
-  for(let i=0;i<data.players.length;i++){
-    const pt='-ᴘʟᴀʏᴇʀ ['+data.players[i]+']';
-    ctx.save();ctx.font=`${Math.round(10*ratio)}px "Courier New",monospace`;const tw=ctx.measureText(pt).width;ctx.restore();
-    dt(pt,BW-RM-tw,y,{s:10,c:'#d0c8b8'});y+=LH+2;
-  }
-  y+=Math.round(6*ratio);
-  dt('备注：'+data.nt,LM,y,{s:10,c:C.accent,w:'bold'});y+=LH+Math.round(6*ratio);
-  dd(y);y+=LH+Math.round(6*ratio);
-  dt('账单合计：',LM,y,{s:12,c:C.ink,w:'bold'});
-  const amt='¥ '+data.amt;
-  ctx.save();ctx.font=`bold ${Math.round(18*ratio)}px "Courier New",monospace`;const aw=ctx.measureText(amt).width;ctx.restore();
-  dt(amt,BW-RM-aw,y-Math.round(2*ratio),{s:18,c:C.darkAccent,w:'bold'});y+=Math.round(36*ratio);
-  dt('• • • • • •',BW/2,y,{s:8,c:C.lightGray,a:'center'});y+=Math.round(20*ratio);
-  dt('TASTE THE MOMENT',BW/2,y,{s:11,f:"'Arial Black',sans-serif",c:'#f0e8d8',a:'center',w:'900'});y+=Math.round(22*ratio);
-  dt('XYX CLUB',BW/2,y,{s:10,f:"'Arial',sans-serif",c:C.gray,a:'center',w:'600'});y+=Math.round(22*ratio);
-  dt('~ 欢迎下次光临 ~',BW/2,y,{s:8,c:C.lightGray,a:'center'});y+=Math.round(14*ratio);
-  y+=Math.round(32*ratio);
-  if(logoImg.complete&&logoImg.naturalWidth>0){
-    // 按原始比例绘制Logo：高度加大到56，宽度按原图比例自动计算
-    const naturalRatio=logoImg.naturalWidth/logoImg.naturalHeight;
-    const lh=Math.round(56*ratio);
-    const lw=Math.round(lh*naturalRatio);
-    ctx.drawImage(logoImg,BW/2-lw/2,y,lw,lh);
-  }
-  for(let i=0;i<400;i++){ctx.fillStyle=`rgba(255,255,255,${Math.random()*0.02})`;ctx.fillRect(Math.random()*BW,Math.random()*baseH,Math.random()*1.5,Math.random()*1.5);}
-  canvas.toBlob(async(blob)=>{
-    try{await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);alert('✅ 图片已复制到剪贴板');}
-    catch(e){const link=document.createElement('a');link.download='结单小票.png';link.href=canvas.toDataURL('image/png');link.click();alert('已自动下载图片');}
-  });
-}
+function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
+document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});
 </script>
 </body>
 </html>
