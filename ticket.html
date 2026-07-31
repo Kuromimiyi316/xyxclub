@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
   <title>结单小票 · 幸运星俱乐部</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
+  </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #8a8276; font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 2rem; }
@@ -35,11 +36,17 @@
     .preview-panel { display: none; max-width: 440px; width: 100%; }
     .preview-panel.show { display: block; }
     .ticket {
-      max-width: 440px; width: 100%; background: #ffffff; border-radius: 10px 10px 6px 6px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.3); padding: 24px 18px 20px; position: relative;
+      max-width: 440px; width: 100%; background: #ffffff; border-radius: 10px 10px 0 0;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3); padding: 24px 18px 0; position: relative;
       border: 1px solid #aaaaaa; color: #1a1a1a;
     }
-    .ticket::after { content: ''; position: absolute; bottom: -12px; left: 0; width: 100%; height: 22px; background: repeating-linear-gradient(45deg, #8a8276 0px, #8a8276 8px, transparent 8px, transparent 16px); background-size: 16px 16px; opacity: 0.7; pointer-events: none; }
+    /* 锯齿底部用div实现 */
+    .ticket-saw {
+      max-width: 440px; width: 100%; height: 22px;
+      background: repeating-linear-gradient(45deg, #8a8276 0px, #8a8276 8px, transparent 8px, transparent 16px);
+      background-size: 16px 16px; opacity: 0.7;
+      margin-bottom: 20px;
+    }
     .top-stars { display: flex; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 6px; }
     .top-stars span { background: #222; color: #fff; padding: 0 12px; border-radius: 30px; font-size: 14px; font-weight: 600; }
     .top-stars .star-mid { background: transparent; color: #111; font-size: 20px; padding: 0; }
@@ -77,13 +84,15 @@
     .footer-loading { margin-top: 18px; text-align: center; font-size: 13px; color: #2a2a2a; border-top: 1px dashed #999; padding-top: 12px; display: flex; justify-content: center; align-items: center; gap: 10px; }
     .footer-loading .static-dots { display: inline; letter-spacing: 2px; }
     .footer-loading .ding { font-weight: 800; color: #000; background: #d0d0d0; padding: 0 14px; border-radius: 30px; font-size: 14px; }
-    .footer-message { text-align: center; margin-top: 8px; font-size: 14px; color: #222; border-top: 1px dotted #aaa; padding-top: 8px; font-weight: 700; font-style: italic; }
+    .footer-message { text-align: center; margin-top: 8px; font-size: 14px; color: #222; border-top: 1px dotted #aaa; padding-top: 8px; font-weight: 700; font-style: italic; padding-bottom: 20px; }
     .back-btn-preview, .copy-btn-preview { text-align: center; margin-top: 16px; }
     .copy-btn-preview .btn { background: #1a1a1a; color: #fff; padding: 0.6rem 2rem; border: none; }
     #imageCanvas { display: none; }
     .footer-note { font-size: 0.7rem; color: #999; text-align: center; line-height: 1.5; margin-top: 0.5rem; }
     hr { border: 0.5px solid #ddd; margin: 1.2rem 0; }
     .hint-text { font-size: 0.65rem; color: #999; margin-top: 0.1rem; }
+    /* 截图包裹器 */
+    .screenshot-wrapper { display: inline-block; }
   </style>
 </head>
 <body>
@@ -108,13 +117,17 @@
 </div>
 
 <div class="preview-panel" id="previewPanel">
-  <div class="ticket" id="ticketPreview"></div>
+  <div class="screenshot-wrapper" id="screenshotTarget">
+    <div class="ticket" id="ticketPreview"></div>
+    <div class="ticket-saw"></div>
+  </div>
   <div class="copy-btn-preview"><button class="btn" onclick="copyAsImage()">📋 复制图片</button></div>
   <div class="back-btn-preview"><button class="btn" onclick="goBackToInput()">↩ 返回修改</button></div>
 </div>
 <canvas id="imageCanvas"></canvas>
 
 <script>
+// Logo预加载
 const logoImg=new Image();logoImg.crossOrigin='anonymous';logoImg.src='https://s3.bmp.ovh/2026/07/31/BXOkPlxv.png';
 let pinyinReady=false;
 const script=document.createElement('script');script.src='https://unpkg.com/pinyin-pro@3.18.2/dist/index.js';script.onload=function(){pinyinReady=true;};document.head.appendChild(script);
@@ -136,18 +149,17 @@ function goToPreview(){
   currentData={staff,member,discount,rows,totalAmt,finalTotal,signature,timeStr,showDiscount};
   let tableRows='',rn=0;rows.forEach(r=>{rn++;if(r.count===1){tableRows+=`<tr><td class="c1"><span class="num">#${String(rn).padStart(2,'0')}</span><span class="name">${r.type}</span></td><td class="c2">${r.player1}</td><td class="c3">${r.qty}</td><td class="c4">¥ ${r.price.toFixed(0)}</td></tr>`;}else{tableRows+=`<tr><td class="c1" rowspan="2"><span class="num">#${String(rn).padStart(2,'0')}</span><span class="name">${r.type}</span></td><td class="c2">${r.player1}</td><td class="c3" rowspan="2">${r.qty}</td><td class="c4" rowspan="2">¥ ${r.price.toFixed(0)}</td></tr><tr><td class="c2">${r.player2||'陪陪2'}</td></tr>`;}});
   const discountHTML=showDiscount?`<div class="discount-area"><span class="discount-label">实付 ${discount}折</span><span class="final-price">¥ ${finalTotal.toFixed(0)}</span></div>`:'';
-  document.getElementById('ticketPreview').innerHTML=`<div class="top-stars"><span>★ ★</span><span class="star-mid">✦ ✦</span><span>★ ★</span></div><div class="vip-header"><div class="logo-area"><img src="https://s3.bmp.ovh/2026/07/31/BXOkPlxv.png" alt="Logo"></div><div class="sub-title">★ 幸运星俱乐部专属结单小票 ★</div><div class="welcome">WELCOME TO THE XYX CLUB</div></div><div class="staff-member"><span>🧾 接待/派单：<span class="highlight">${staff}</span></span><span>👤 会员：<span class="highlight">${member}</span></span></div><div class="thankyou-row">×××感谢宝宝对幸运星的支持与喜爱×××</div><div class="timestamp">⏱ ${timeStr}</div><table class="table-receipt"><thead><tr><th>点单类型</th><th>陪陪</th><th>数量</th><th>价格</th></tr></thead><tbody>${tableRows}</tbody></table><hr class="divider-dash"><div class="total-area"><div class="total-line"><span>合计</span><span class="total-amount">¥ ${totalAmt.toFixed(0)}</span></div></div>${discountHTML}<div class="signature-area"><span class="sign-label">会员签名：</span><span class="sign-line">${signature}</span></div><div class="footer-loading"><span>您的小票正在加载中 <span class="static-dots">...</span></span><span class="ding">叮！小票出炉啦！</span></div><div class="footer-message">Hope to see you next time</div>`;
+  document.getElementById('ticketPreview').innerHTML=`<div class="top-stars"><span>★ ★</span><span class="star-mid">✦ ✦</span><span>★ ★</span></div><div class="vip-header"><div class="logo-area"><img src="https://s3.bmp.ovh/2026/07/31/BXOkPlxv.png" alt="Logo" crossorigin="anonymous"></div><div class="sub-title">★ 幸运星俱乐部专属结单小票 ★</div><div class="welcome">WELCOME TO THE XYX CLUB</div></div><div class="staff-member"><span>🧾 接待/派单：<span class="highlight">${staff}</span></span><span>👤 会员：<span class="highlight">${member}</span></span></div><div class="thankyou-row">×××感谢宝宝对幸运星的支持与喜爱×××</div><div class="timestamp">⏱ ${timeStr}</div><table class="table-receipt"><thead><tr><th>点单类型</th><th>陪陪</th><th>数量</th><th>价格</th></tr></thead><tbody>${tableRows}</tbody></table><hr class="divider-dash"><div class="total-area"><div class="total-line"><span>合计</span><span class="total-amount">¥ ${totalAmt.toFixed(0)}</span></div></div>${discountHTML}<div class="signature-area"><span class="sign-label">会员签名：</span><span class="sign-line">${signature}</span></div><div class="footer-loading"><span>您的小票正在加载中 <span class="static-dots">...</span></span><span class="ding">叮！小票出炉啦！</span></div><div class="footer-message">Hope to see you next time</div>`;
   document.getElementById('inputPanel').classList.add('hidden');document.getElementById('previewPanel').classList.add('show');window.scrollTo(0,0);
 }
 function goBackToInput(){document.getElementById('previewPanel').classList.remove('show');document.getElementById('inputPanel').classList.remove('hidden');window.scrollTo(0,0);}
 
-// ★ 使用 html2canvas 直接截图预览面板
 function copyAsImage(){
-  const ticket=document.getElementById('ticketPreview');
-  if(!ticket||!ticket.innerHTML.trim()){alert('请先生成预览');return;}
+  const target=document.getElementById('screenshotTarget');
+  if(!target||!document.getElementById('ticketPreview').innerHTML.trim()){alert('请先生成预览');return;}
   
-  html2canvas(ticket,{
-    backgroundColor:'#ffffff',
+  html2canvas(target,{
+    backgroundColor:null,
     scale:3,
     useCORS:true,
     allowTaint:true,
@@ -169,7 +181,6 @@ function copyAsImage(){
     alert('截图失败，请尝试刷新页面后重试');
   });
 }
-
 function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
 document.getElementById('rowsContainer').innerHTML=createRowHTML(0);
 document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});
