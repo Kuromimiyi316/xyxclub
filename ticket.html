@@ -95,7 +95,7 @@ async function copyImg(){
   const canvas=document.getElementById('imageCanvas'),ctx=canvas.getContext('2d');
   const ratio=240/253,scale=3,baseW=240;
   const extraPlayers=Math.max(0,data.players.length-1);
-  const logoH=(logoImg.complete&&logoImg.naturalWidth>0)?Math.round(40*ratio):0;
+  const logoH=(logoImg.complete&&logoImg.naturalWidth>0)?Math.round(56*ratio):0;
   const baseH=390+extraPlayers*Math.round(16*ratio)+logoH+Math.round(32*ratio);
   canvas.width=baseW*scale;canvas.height=baseH*scale;ctx.scale(scale,scale);
 
@@ -137,7 +137,10 @@ async function copyImg(){
   dt('~ 欢迎下次光临 ~',BW/2,y,{s:8,c:C.lightGray,a:'center'});y+=Math.round(14*ratio);
   y+=Math.round(32*ratio);
   if(logoImg.complete&&logoImg.naturalWidth>0){
-    const lw=Math.round(56*ratio),lh=Math.round(40*ratio);
+    // 按原始比例绘制Logo：高度加大到56，宽度按原图比例自动计算
+    const naturalRatio=logoImg.naturalWidth/logoImg.naturalHeight;
+    const lh=Math.round(56*ratio);
+    const lw=Math.round(lh*naturalRatio);
     ctx.drawImage(logoImg,BW/2-lw/2,y,lw,lh);
   }
   for(let i=0;i<400;i++){ctx.fillStyle=`rgba(255,255,255,${Math.random()*0.02})`;ctx.fillRect(Math.random()*BW,Math.random()*baseH,Math.random()*1.5,Math.random()*1.5);}
