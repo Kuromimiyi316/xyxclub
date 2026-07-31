@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
   <title>结单小票 · 幸运星俱乐部</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #8a8276; font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 2rem; }
@@ -48,7 +49,7 @@
     .vip-header .welcome { font-size: 15px; margin-top: 6px; color: #1a1a1a; font-weight: 500; border-top: 1px dotted #999; padding-top: 8px; }
     .staff-member { display: flex; justify-content: space-between; font-size: 15px; padding: 6px; border-bottom: 1px dashed #999; margin-bottom: 8px; background: #f2f2f2; border-radius: 4px; }
     .staff-member .highlight { color: #000; font-weight: 700; }
-    .thankyou-row { text-align: center; font-size: 15px; font-weight: 700; color: #000; padding: 8px; border-bottom: 1px solid #bbb; margin-bottom: 10px; background: #f6f6f6; border-radius: 4px; border: 1px solid #ddd; }
+    .thankyou-row { text-align: center; font-size: 14px; font-weight: 700; color: #000; padding: 8px; border-bottom: 1px solid #bbb; margin-bottom: 10px; background: #f6f6f6; border-radius: 4px; border: 1px solid #ddd; }
     .timestamp { text-align: right; font-size: 14px; color: #222; margin-bottom: 12px; font-weight: 500; border-bottom: 1px dashed #aaa; padding-bottom: 8px; }
     .table-receipt { width: 100%; font-size: 13px; border-collapse: collapse; margin: 4px 0 8px 0; color: #000; }
     .table-receipt th { font-weight: 800; font-size: 13px; border-bottom: 2px solid #333; padding: 4px 0 6px; white-space: nowrap; }
@@ -114,11 +115,8 @@
 <canvas id="imageCanvas"></canvas>
 
 <script>
-const logoImg=new Image();logoImg.src='logo.jpg'; // 同目录logo.jpg
-// 如果同目录没有，尝试网络加载
-logoImg.onerror=function(){
-  logoImg.src='https://s3.bmp.ovh/2026/07/31/BXOkPlxv.png';
-};
+const logoImg=new Image();logoImg.src='logo.jpg';
+logoImg.onerror=function(){logoImg.src='https://s3.bmp.ovh/2026/07/31/BXOkPlxv.png';};
 let pinyinReady=false;
 const script=document.createElement('script');script.src='https://unpkg.com/pinyin-pro@3.18.2/dist/index.js';script.onload=function(){pinyinReady=true;};document.head.appendChild(script);
 const pm={'晚':'Wan','兔':'Tu','子':'Zi','小':'Xiao','优':'You','安':'An','然':'Ran','乐':'Le','天':'Tian','明':'Ming','花':'Hua','月':'Yue','星':'Xing','雨':'Yu','雪':'Xue','风':'Feng','云':'Yun','龙':'Long','王':'Wang','李':'Li','张':'Zhang','刘':'Liu','陈':'Chen','杨':'Yang','赵':'Zhao','周':'Zhou','吴':'Wu','徐':'Xu','孙':'Sun','马':'Ma','朱':'Zhu','胡':'Hu','郭':'Guo','何':'He','高':'Gao','林':'Lin','罗':'Luo','郑':'Zheng','梁':'Liang','谢':'Xie','宋':'Song','唐':'Tang','韩':'Han','曹':'Cao','许':'Xu','邓':'Deng','冯':'Feng','曾':'Zeng','程':'Cheng','蔡':'Cai','彭':'Peng','潘':'Pan','袁':'Yuan','于':'Yu','董':'Dong','余':'Yu','苏':'Su','叶':'Ye','魏':'Wei','蒋':'Jiang','田':'Tian','杜':'Du','丁':'Ding','沈':'Shen','姜':'Jiang','范':'Fan','江':'Jiang','傅':'Fu','钟':'Zhong','卢':'Lu','汪':'Wang','戴':'Dai','崔':'Cui','任':'Ren','陆':'Lu','廖':'Liao','姚':'Yao','方':'Fang','金':'Jin','夏':'Xia','谭':'Tan','韦':'Wei','贾':'Jia','邹':'Zou','石':'Shi','熊':'Xiong','孟':'Meng','秦':'Qin','薛':'Xue','侯':'Hou','雷':'Lei','白':'Bai','段':'Duan','郝':'Hao','孔':'Kong','邵':'Shao','史':'Shi','毛':'Mao','常':'Chang','万':'Wan','顾':'Gu','武':'Wu','康':'Kang','贺':'He','严':'Yan','钱':'Qian','施':'Shi','牛':'Niu','洪':'Hong','爱':'Ai','甜':'Tian','美':'Mei','丽':'Li','文':'Wen','静':'Jing','雅':'Ya','思':'Si','梦':'Meng','晓':'Xiao','婉':'Wan','婷':'Ting','嘉':'Jia','欣':'Xin','怡':'Yi','洁':'Jie','琳':'Lin','瑶':'Yao','倩':'Qian','慧':'Hui','敏':'Min','芳':'Fang','燕':'Yan','萍':'Ping','丹':'Dan','秀':'Xiu','娟':'Juan','莉':'Li','莎':'Sha','菲':'Fei','露':'Lu','晨':'Chen','曦':'Xi','彤':'Tong','萱':'Xuan','若':'Ruo','娜':'Na','玲':'Ling','珍':'Zhen','帅':'Shuai','杰':'Jie','伟':'Wei','强':'Qiang','涛':'Tao','斌':'Bin','超':'Chao','峰':'Feng','辉':'Hui','毅':'Yi','俊':'Jun','翔':'Xiang','宝':'Bao','贝':'Bei','欢':'Huan','喜':'Xi','福':'Fu','贵':'Gui','瑞':'Rui','吉':'Ji','旺':'Wang','财':'Cai','富':'Fu','顺':'Shun','利':'Li','平':'Ping','健':'Jian','幸':'Xing','运':'Yun','好':'Hao'};
@@ -144,79 +142,30 @@ function goToPreview(){
 }
 function goBackToInput(){document.getElementById('previewPanel').classList.remove('show');document.getElementById('inputPanel').classList.remove('hidden');window.scrollTo(0,0);}
 
-// ★ Canvas绘制图片（含Logo+锯齿）
-function copyAsImage(){
-  if(!currentData){alert('请先生成预览');return;}
-  if(!logoImg.complete){alert('Logo正在加载中，请稍后再试');return;}
-  const canvas=document.getElementById('imageCanvas'),ctx=canvas.getContext('2d');
-  const scale=3,baseW=440,LM=28,RM=28,LH=22;
-  let totalRows=0;currentData.rows.forEach(r=>{totalRows+=r.count;});
-  const logoH=logoImg.naturalWidth>0?48:0;const discountH=currentData.showDiscount?36:0;
-  const contentH=560+totalRows*LH+logoH+discountH+40;
-  const sawH=20;
-  const baseH=contentH+sawH+16;
-  canvas.width=baseW*scale;canvas.height=baseH*scale;ctx.scale(scale,scale);
-  ctx.fillStyle='#fff';ctx.fillRect(0,0,baseW,contentH);
+async function copyAsImage(){
+  const ticket=document.getElementById('ticketPreview');
+  if(!ticket||!ticket.innerHTML.trim()){alert('请先生成预览');return;}
 
-  function dt(t,x,y,o={}){const{s=12,f="'Courier New',monospace",c='#1a1a1a',a='left',b='top',w='normal'}=o;ctx.save();ctx.font=`${w} ${s}px ${f}`;ctx.fillStyle=c;ctx.textAlign=a;ctx.textBaseline=b;ctx.fillText(t,x,y);ctx.restore();}
-  function fl(y,d=false){ctx.strokeStyle='#ccc';ctx.lineWidth=0.5;ctx.setLineDash(d?[4,4]:[]);ctx.beginPath();ctx.moveTo(LM,y);ctx.lineTo(baseW-RM,y);ctx.stroke();ctx.setLineDash([]);}
-  function db(y){ctx.strokeStyle='#aaa';ctx.lineWidth=1;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(LM,y);ctx.lineTo(baseW-RM,y);ctx.stroke();ctx.setLineDash([]);}
-
-  let y=26;
-  dt('★ ★',LM,y,{s:12,c:'#000'});dt('✦ ✦',baseW/2,y,{s:12,c:'#000',a:'center'});dt('★ ★',baseW-RM,y,{s:12,c:'#000',a:'right'});y+=20;
-  // Logo
-  if(logoImg.naturalWidth>0){const nr=logoImg.naturalWidth/logoImg.naturalHeight,lh=48,lw=Math.round(lh*nr);ctx.drawImage(logoImg,baseW/2-lw/2,y,lw,lh);y+=lh+10;}
-  dt('★ 幸运星俱乐部专属结单小票 ★',baseW/2,y,{s:11,c:'#000',a:'center',w:'bold'});y+=20;
-  dt('WELCOME TO THE XYX CLUB',baseW/2,y,{s:10,c:'#333',a:'center'});y+=26;
-  ctx.fillStyle='#f2f2f2';ctx.fillRect(LM-4,y-2,baseW-LM-RM+8,26);
-  dt(`🧾 接待/派单：${currentData.staff}`,LM+4,y+2,{s:12,c:'#000',w:'bold'});
-  dt(`👤 会员：${currentData.member}`,baseW-RM-100,y+2,{s:12,c:'#000',w:'bold'});y+=34;
-  ctx.fillStyle='#f6f6f6';ctx.fillRect(LM-4,y-2,baseW-LM-RM+8,26);
-  dt('×××感谢宝宝对幸运星的支持与喜爱×××',baseW/2,y+2,{s:11,c:'#000',a:'center',w:'bold'});y+=34;
-  dt(`⏱ ${currentData.timeStr}`,baseW-RM,y,{s:10,c:'#333',a:'right'});y+=24;
-  fl(y);y+=10;
-  const c1=LM,c2=LM+155,c3=LM+270,c4=baseW-RM;
-  dt('点单类型',c1,y,{s:10,c:'#000',w:'bold'});dt('陪陪',c2,y,{s:10,c:'#000',w:'bold',a:'center'});
-  dt('数量',c3,y,{s:10,c:'#000',w:'bold',a:'center'});dt('价格',c4,y,{s:10,c:'#000',w:'bold',a:'right'});y+=10;
-  fl(y);y+=12;
-  let rn=0;
-  currentData.rows.forEach(r=>{
-    rn++;
-    dt(`#${String(rn).padStart(2,'0')}`,c1,y,{s:11,c:'#555'});dt(r.type,c1,y+LH/2,{s:12,c:'#000',w:'bold'});
-    if(r.count===1){
-      dt(r.player1,c2,y+LH/2,{s:10,c:'#000',a:'center'});dt(String(r.qty),c3,y+LH/2,{s:10,c:'#000',a:'center'});
-      dt(`¥ ${r.price.toFixed(0)}`,c4,y+LH/2,{s:10,c:'#000',w:'bold',a:'right'});y+=LH+6;
-    }else{
-      dt(r.player1,c2,y,{s:10,c:'#000',a:'center'});dt(String(r.qty),c3,y+LH/2,{s:10,c:'#000',a:'center'});
-      dt(`¥ ${r.price.toFixed(0)}`,c4,y+LH/2,{s:10,c:'#000',w:'bold',a:'right'});y+=LH;
-      dt(r.player2,c2,y,{s:10,c:'#000',a:'center'});y+=LH+6;
-    }
-  });
-  y+=4;db(y);y+=12;
-  dt('合计',baseW-RM-160,y,{s:13,c:'#000'});dt(`¥ ${currentData.totalAmt.toFixed(0)}`,baseW-RM,y,{s:14,c:'#000',w:'bold',a:'right'});y+=26;
-  if(currentData.showDiscount){
-    ctx.fillStyle='#1a1a1a';ctx.fillRect(c1+200,y-2,50,20);
-    dt(`实付 ${currentData.discount}折`,c1+204,y+1,{s:9,c:'#fff',w:'bold'});
-    dt(`¥ ${currentData.finalTotal.toFixed(0)}`,baseW-RM,y+1,{s:16,c:'#000',w:'bold',a:'right'});y+=32;
-  }
-  fl(y);y+=14;
-  dt('会员签名：',LM,y,{s:12,c:'#000'});dt(currentData.signature,LM+100,y+4,{s:22,f:"'Dancing Script',cursive",c:'#000',w:'bold'});y+=46;
-  fl(y);y+=14;
-  dt('您的小票正在加载中 ...',baseW/2-35,y,{s:9,c:'#333',a:'center'});dt('叮！小票出炉啦！',baseW/2+95,y,{s:9,c:'#000',w:'bold',a:'center'});y+=22;
-  dt('Hope to see you next time',baseW/2,y,{s:10,c:'#333',a:'center',w:'bold'});
-
-  // ★ 锯齿边缘
-  const sawW=8;ctx.fillStyle='#8a8276';
-  for(let x=0;x<=baseW;x+=sawW){
-    ctx.beginPath();ctx.moveTo(x,contentH);ctx.lineTo(x+sawW/2,contentH+sawH);ctx.lineTo(x+sawW,contentH);ctx.fill();
+  // 1. 先截取白底面板
+  const screenshotCanvas=await html2canvas(ticket,{backgroundColor:'#ffffff',scale:3,useCORS:true,allowTaint:true,logging:false});
+  
+  // 2. 如果Logo已加载，手动绘制到Canvas上覆盖
+  if(logoImg.complete&&logoImg.naturalWidth>0){
+    const ctx2=screenshotCanvas.getContext('2d');
+    const nr=logoImg.naturalWidth/logoImg.naturalHeight;
+    const lh=144; // 3倍尺寸(48*3)
+    const lw=Math.round(lh*nr);
+    const x=(screenshotCanvas.width-lw)/2;
+    const y=130; // Logo在截图中的Y位置(3倍)
+    ctx2.drawImage(logoImg,x,y,lw,lh);
   }
 
-  // 导出
-  canvas.toBlob(function(blob){
+  // 3. 导出
+  screenshotCanvas.toBlob(function(blob){
     try{
       const item=new ClipboardItem({'image/png':blob});
-      navigator.clipboard.write([item]).then(function(){alert('✅ 图片已复制到剪贴板');}).catch(function(){const a=document.createElement('a');a.download='结单小票.png';a.href=canvas.toDataURL('image/png');a.click();alert('已自动下载图片');});
-    }catch(e){const a=document.createElement('a');a.download='结单小票.png';a.href=canvas.toDataURL('image/png');a.click();alert('已自动下载图片');}
+      navigator.clipboard.write([item]).then(function(){alert('✅ 图片已复制到剪贴板');}).catch(function(){const a=document.createElement('a');a.download='结单小票.png';a.href=screenshotCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');});
+    }catch(e){const a=document.createElement('a');a.download='结单小票.png';a.href=screenshotCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');}
   },'image/png');
 }
 function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
