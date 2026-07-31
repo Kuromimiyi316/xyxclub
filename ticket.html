@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
   <title>结单小票 · 幸运星俱乐部</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #8a8276; font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 2rem; }
@@ -33,7 +34,11 @@
     .remove-row-btn { font-size: 0.75rem; color: #c0392b; cursor: pointer; background: none; border: none; padding: 0.3rem 0.5rem; align-self: flex-end; margin-bottom: 0.3rem; }
     .preview-panel { display: none; max-width: 440px; width: 100%; }
     .preview-panel.show { display: block; }
-    .ticket { max-width: 440px; width: 100%; background: #ffffff; border-radius: 10px 10px 6px 6px; box-shadow: 0 6px 18px rgba(0,0,0,0.3); padding: 24px 18px 20px; position: relative; border: 1px solid #aaaaaa; color: #1a1a1a; }
+    .ticket {
+      max-width: 440px; width: 100%; background: #ffffff; border-radius: 10px 10px 6px 6px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3); padding: 24px 18px 20px; position: relative;
+      border: 1px solid #aaaaaa; color: #1a1a1a;
+    }
     .ticket::after { content: ''; position: absolute; bottom: -12px; left: 0; width: 100%; height: 22px; background: repeating-linear-gradient(45deg, #8a8276 0px, #8a8276 8px, transparent 8px, transparent 16px); background-size: 16px 16px; opacity: 0.7; pointer-events: none; }
     .top-stars { display: flex; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 6px; }
     .top-stars span { background: #222; color: #fff; padding: 0 12px; border-radius: 30px; font-size: 14px; font-weight: 600; }
@@ -136,32 +141,35 @@ function goToPreview(){
 }
 function goBackToInput(){document.getElementById('previewPanel').classList.remove('show');document.getElementById('inputPanel').classList.remove('hidden');window.scrollTo(0,0);}
 
+// ★ 使用 html2canvas 直接截图预览面板
 function copyAsImage(){
-  if(!currentData){alert('请先生成预览');return;}
-  const canvas=document.getElementById('imageCanvas'),ctx=canvas.getContext('2d');
-  const scale=3,baseW=420,LM=24,RM=24,LH=22;
-  let totalRows=0;currentData.rows.forEach(r=>{totalRows+=r.count;});const logoH=logoImg.naturalWidth>0?40:0;const discountH=currentData.showDiscount?36:0;const baseH=560+totalRows*LH+logoH+discountH+40;
-  canvas.width=baseW*scale;canvas.height=baseH*scale;ctx.scale(scale,scale);ctx.fillStyle='#fff';ctx.fillRect(0,0,baseW,baseH);
-  function dt(t,x,y,o={}){const{s=12,f="'Courier New',monospace",c='#1a1a1a',a='left',b='top',w='normal'}=o;ctx.save();ctx.font=`${w} ${s}px ${f}`;ctx.fillStyle=c;ctx.textAlign=a;ctx.textBaseline=b;ctx.fillText(t,x,y);ctx.restore();}
-  function fl(y){ctx.strokeStyle='#ccc';ctx.lineWidth=0.5;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(LM,y);ctx.lineTo(baseW-RM,y);ctx.stroke();ctx.setLineDash([]);}
-  let y=24;dt('★ ★',LM,y,{s:11,c:'#000'});dt('✦ ✦',baseW/2,y,{s:11,c:'#000',a:'center'});dt('★ ★',baseW-RM,y,{s:11,c:'#000',a:'right'});y+=18;
-  if(logoImg.complete&&logoImg.naturalWidth>0){const nr=logoImg.naturalWidth/logoImg.naturalHeight,lh=40,lw=Math.round(lh*nr);ctx.drawImage(logoImg,baseW/2-lw/2,y,lw,lh);y+=lh+8;}
-  dt('★ 幸运星俱乐部专属结单小票 ★',baseW/2,y,{s:11,c:'#000',a:'center',w:'bold'});y+=18;dt('WELCOME TO THE XYX CLUB',baseW/2,y,{s:10,c:'#333',a:'center'});y+=24;
-  ctx.fillStyle='#f2f2f2';ctx.fillRect(LM-4,y-2,baseW-LM-RM+8,26);dt(`🧾 接待/派单：${currentData.staff}`,LM+4,y+2,{s:12,c:'#000',w:'bold'});dt(`👤 会员：${currentData.member}`,baseW-RM-100,y+2,{s:12,c:'#000',w:'bold'});y+=32;
-  ctx.fillStyle='#f6f6f6';ctx.fillRect(LM-4,y-2,baseW-LM-RM+8,26);dt('×××感谢宝宝对幸运星的支持与喜爱×××',baseW/2,y+2,{s:11,c:'#000',a:'center',w:'bold'});y+=32;
-  dt(`⏱ ${currentData.timeStr}`,baseW-RM,y,{s:10,c:'#333',a:'right'});y+=22;fl(y);y+=8;
-  const c1=LM,c2=LM+150,c3=LM+260,c4=baseW-RM;dt('点单类型',c1,y,{s:10,c:'#000',w:'bold'});dt('陪陪',c2,y,{s:10,c:'#000',w:'bold',a:'center'});dt('数量',c3,y,{s:10,c:'#000',w:'bold',a:'center'});dt('价格',c4,y,{s:10,c:'#000',w:'bold',a:'right'});y+=8;fl(y);y+=10;
-  let rn=0;currentData.rows.forEach(r=>{rn++;dt(`#${String(rn).padStart(2,'0')}`,c1,y,{s:11,c:'#555'});dt(r.type,c1,y+LH/2,{s:12,c:'#000',w:'bold'});if(r.count===1){dt(r.player1,c2,y+LH/2,{s:10,c:'#000',a:'center'});dt(String(r.qty),c3,y+LH/2,{s:10,c:'#000',a:'center'});dt(`¥ ${r.price.toFixed(0)}`,c4,y+LH/2,{s:10,c:'#000',w:'bold',a:'right'});y+=LH+6;}else{dt(r.player1,c2,y,{s:10,c:'#000',a:'center'});dt(String(r.qty),c3,y+LH/2,{s:10,c:'#000',a:'center'});dt(`¥ ${r.price.toFixed(0)}`,c4,y+LH/2,{s:10,c:'#000',w:'bold',a:'right'});y+=LH;dt(r.player2,c2,y,{s:10,c:'#000',a:'center'});y+=LH+6;}});
-  y+=4;fl(y);y+=10;dt('合计',baseW-RM-160,y,{s:13,c:'#000'});dt(`¥ ${currentData.totalAmt.toFixed(0)}`,baseW-RM,y,{s:14,c:'#000',w:'bold',a:'right'});y+=24;
-  if(currentData.showDiscount){ctx.fillStyle='#1a1a1a';ctx.fillRect(c1+190,y-2,50,20);dt(`实付 ${currentData.discount}折`,c1+194,y+1,{s:9,c:'#fff',w:'bold'});dt(`¥ ${currentData.finalTotal.toFixed(0)}`,baseW-RM,y+1,{s:16,c:'#000',w:'bold',a:'right'});y+=30;}
-  fl(y);y+=12;dt('会员签名：',LM,y,{s:12,c:'#000'});dt(currentData.signature,LM+100,y+4,{s:22,f:"'Dancing Script',cursive",c:'#000',w:'bold'});y+=44;fl(y);y+=12;
-  dt('您的小票正在加载中 ...',baseW/2-30,y,{s:9,c:'#333',a:'center'});dt('叮！小票出炉啦！',baseW/2+90,y,{s:9,c:'#000',w:'bold',a:'center'});y+=20;dt('Hope to see you next time',baseW/2,y,{s:10,c:'#333',a:'center',w:'bold'});y+=16;
-  const sawH=16,sawW=8;ctx.fillStyle='#8a8276';ctx.beginPath();for(let x=0;x<=baseW;x+=sawW){ctx.lineTo(x,baseH-sawH/2);ctx.lineTo(x+sawW/2,baseH);ctx.lineTo(x+sawW,baseH-sawH/2);}ctx.lineTo(baseW,baseH-sawH);ctx.lineTo(0,baseH-sawH);ctx.closePath();ctx.fill();
-  canvas.toBlob(function(blob){
-    try{const item=new ClipboardItem({'image/png':blob});navigator.clipboard.write([item]).then(function(){alert('✅ 图片已复制到剪贴板');}).catch(function(){const a=document.createElement('a');a.download='结单小票.png';a.href=canvas.toDataURL('image/png');a.click();alert('已自动下载图片');});}
-    catch(e){const a=document.createElement('a');a.download='结单小票.png';a.href=canvas.toDataURL('image/png');a.click();alert('已自动下载图片');}
-  },'image/png');
+  const ticket=document.getElementById('ticketPreview');
+  if(!ticket||!ticket.innerHTML.trim()){alert('请先生成预览');return;}
+  
+  html2canvas(ticket,{
+    backgroundColor:'#ffffff',
+    scale:3,
+    useCORS:true,
+    allowTaint:true,
+    logging:false
+  }).then(function(canvas){
+    canvas.toBlob(function(blob){
+      try{
+        const item=new ClipboardItem({'image/png':blob});
+        navigator.clipboard.write([item]).then(function(){
+          alert('✅ 图片已复制到剪贴板');
+        }).catch(function(){
+          const a=document.createElement('a');a.download='结单小票.png';a.href=canvas.toDataURL('image/png');a.click();alert('已自动下载图片');
+        });
+      }catch(e){
+        const a=document.createElement('a');a.download='结单小票.png';a.href=canvas.toDataURL('image/png');a.click();alert('已自动下载图片');
+      }
+    },'image/png');
+  }).catch(function(){
+    alert('截图失败，请尝试刷新页面后重试');
+  });
 }
+
 function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
 document.getElementById('rowsContainer').innerHTML=createRowHTML(0);
 document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});
