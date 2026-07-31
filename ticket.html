@@ -61,7 +61,6 @@
 <canvas id="imageCanvas"></canvas>
 
 <script>
-// 从同目录加载logo.jpg
 const logoImg = new Image();
 logoImg.src = 'logo.jpg';
 
@@ -96,11 +95,10 @@ async function copyImg(){
   const canvas=document.getElementById('imageCanvas'),ctx=canvas.getContext('2d');
   const ratio=240/253,scale=3,baseW=240;
   const extraPlayers=Math.max(0,data.players.length-1);
-  const logoH=(logoImg.complete&&logoImg.naturalWidth>0)?Math.round(36*ratio):0;
-  const baseH=390+extraPlayers*Math.round(16*ratio)+logoH;
+  const logoH=(logoImg.complete&&logoImg.naturalWidth>0)?Math.round(40*ratio):0;
+  const baseH=390+extraPlayers*Math.round(16*ratio)+logoH+Math.round(32*ratio);
   canvas.width=baseW*scale;canvas.height=baseH*scale;ctx.scale(scale,scale);
 
-  // 背景色改为与Logo一致的黑色
   const BG='#000000';
   const C={paper:BG,ink:'#e0d6c8',gray:'#999590',lightGray:'#555',accent:'#e06050',darkAccent:'#e0a088'};
   const LM=Math.round(16*ratio),RM=Math.round(16*ratio),LH=Math.round(16*ratio),BW=baseW;
@@ -135,9 +133,13 @@ async function copyImg(){
   dt(amt,BW-RM-aw,y-Math.round(2*ratio),{s:18,c:C.darkAccent,w:'bold'});y+=Math.round(36*ratio);
   dt('• • • • • •',BW/2,y,{s:8,c:C.lightGray,a:'center'});y+=Math.round(20*ratio);
   dt('TASTE THE MOMENT',BW/2,y,{s:11,f:"'Arial Black',sans-serif",c:'#f0e8d8',a:'center',w:'900'});y+=Math.round(22*ratio);
-  dt('XYX CLUB',BW/2,y,{s:10,f:"'Arial',sans-serif",c:C.gray,a:'center',w:'600'});y+=Math.round(14*ratio);
-  dt('~ 感谢光临 ~',BW/2,y,{s:8,c:C.lightGray,a:'center'});y+=Math.round(10*ratio);
-  if(logoImg.complete&&logoImg.naturalWidth>0){ctx.drawImage(logoImg,BW/2-Math.round(25*ratio),y,Math.round(50*ratio),Math.round(36*ratio));}
+  dt('XYX CLUB',BW/2,y,{s:10,f:"'Arial',sans-serif",c:C.gray,a:'center',w:'600'});y+=Math.round(22*ratio);
+  dt('~ 欢迎下次光临 ~',BW/2,y,{s:8,c:C.lightGray,a:'center'});y+=Math.round(14*ratio);
+  y+=Math.round(32*ratio);
+  if(logoImg.complete&&logoImg.naturalWidth>0){
+    const lw=Math.round(56*ratio),lh=Math.round(40*ratio);
+    ctx.drawImage(logoImg,BW/2-lw/2,y,lw,lh);
+  }
   for(let i=0;i<400;i++){ctx.fillStyle=`rgba(255,255,255,${Math.random()*0.02})`;ctx.fillRect(Math.random()*BW,Math.random()*baseH,Math.random()*1.5,Math.random()*1.5);}
   canvas.toBlob(async(blob)=>{
     try{await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);alert('✅ 图片已复制到剪贴板');}
