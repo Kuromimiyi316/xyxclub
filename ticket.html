@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=1.5">
+  <title>结单小票 · 幸运星俱乐部</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: linear-gradient(135deg, #fdf6f0 0%, #f5efe8 50%, #faf5f0 100%); font-family: system-ui, 'Segoe UI', Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1.5rem; }
+    .card { max-width: 780px; width: 100%; background: #fff; border-radius: 2.5rem; box-shadow: 0 25px 45px rgba(0,0,0,0.08); padding: 2rem 2rem 2.2rem; border: 1px solid #ede7e0; }
+    h1 { font-size: 1.8rem; font-weight: 650; color: #3b2e24; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+    .subtitle { font-size: 0.9rem; color: #8b7a6b; margin-bottom: 1.5rem; }
+    .section-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.4rem; padding-bottom: 0.9rem; border-bottom: 2px dashed #e8ddd0; }
+    .back-btn { margin-left: auto; background: transparent; border: 1.5px solid #d6c7b8; padding: 0.45rem 1.1rem; border-radius: 2rem; font-size: 0.85rem; color: #5e4e3c; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; }
+    .back-btn:hover { background: #ede3d8; border-color: #b39274; }
+    .form-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+    .form-row { display: flex; flex-wrap: wrap; gap: 1rem; }
+    .form-row .input-group { flex: 1 1 calc(50% - 0.5rem); }
+    .input-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    label { font-size: 0.85rem; font-weight: 550; color: #5e4e3c; }
+    input { width: 100%; padding: 0.8rem 1.1rem; border: 1.5px solid #e0d6cc; border-radius: 1.3rem; font-size: 0.95rem; background: #fcfaf8; color: #2e241a; }
+    input:focus { outline: none; border-color: #b39274; box-shadow: 0 0 0 4px rgba(179,146,116,0.12); background: #fff; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.5rem 0 1.5rem; }
+    .btn { background: #f0ebe4; border: none; padding: 0.75rem 1.6rem; border-radius: 2.5rem; font-weight: 550; font-size: 0.9rem; color: #4d3a2c; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; }
+    .btn-primary { background: #b39274; color: white; }
+    .btn-primary:hover { background: #9e7d60; }
+    .btn:hover { background: #e5d9cc; }
+    .output-section { margin-top: 1rem; }
+    .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem; }
+    .output-header span { font-weight: 600; color: #3b2e24; font-size: 1rem; }
+    .output-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .copy-btn { background: transparent; border: 1px solid #d6c7b8; padding: 0.4rem 1rem; border-radius: 2rem; font-size: 0.8rem; color: #5e4e3c; cursor: pointer; display: flex; align-items: center; gap: 0.25rem; }
+    .copy-btn:hover { background: #ede3d8; }
+    .output-box { background: #faf8f5; border: 1.5px solid #e2d6ca; border-radius: 1.5rem; padding: 1.3rem 1.4rem; font-family: 'SF Mono',monospace; font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; color: #2e241a; min-height: 150px; max-height: 450px; overflow-y: auto; }
+    .placeholder-note { color: #b9a18b; font-style: italic; }
+    hr { border: 0.5px solid #e3d9ce; margin: 1rem 0 0.6rem; }
+    .footer-note { font-size: 0.7rem; color: #b9a18b; text-align: right; line-height: 1.5; }
+    #imageCanvas { display: none; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>🧾 结单小票</h1>
+  <div class="subtitle">幸运星俱乐部 · 客服专属工具</div>
+  <div class="section-header"><span>🧾</span><span>结单小票</span><a class="back-btn" href="index.html">↩ 返回首页</a></div>
+  <div class="form-grid">
+    <div class="form-row"><div class="input-group"><label>🔢 编号</label><input id="tNumber" placeholder="例如：VIP520"></div><div class="input-group"><label>📅 时间</label><input id="tDate" placeholder="例如：2026.2.5"></div></div>
+    <div class="form-row"><div class="input-group"><label>👤 板宝</label><input id="tBoss" placeholder="例如：署名"></div><div class="input-group"><label>👥 人数</label><input id="tPeople" type="number" min="1" placeholder="例如：1"><span style="font-size:0.7rem;color:#b9a18b;">陪陪数量</span></div></div>
+    <div class="input-group"><label>🎯 项目名称</label><input id="tProject" placeholder="例如：手游体验"></div>
+    <div class="input-group"><label>🎮 陪陪名</label><input id="tPlayer" placeholder="例如：啾啾 mia"><span style="font-size:0.7rem;color:#b9a18b;">多个陪陪用空格分隔</span></div>
+    <div class="input-group"><label>📝 备注</label><input id="tNote" placeholder="例如：痛将有时 爱必将至"></div>
+    <div class="input-group"><label>💰 账单合计</label><input id="tAmount" placeholder="例如：88.88"></div>
+  </div>
+  <div class="button-row"><button class="btn btn-primary" onclick="gen()">✨ 生成小票</button><button class="btn" onclick="clearForm()">🧹 清空</button></div>
+  <div class="output-section">
+    <div class="output-header"><span>📄 结单小票</span><div class="output-btns"><button class="copy-btn" onclick="copyText()">📋 复制文本</button><button class="copy-btn" style="border-color:#c8b299;color:#8b6d4b;" onclick="copyImg()">🖼️ 复制图片</button></div></div>
+    <div class="output-box" id="tOutput"><span class="placeholder-note">尚未生成小票</span></div>
+  </div>
+  <hr><div class="footer-note">幸运星俱乐部 · 客服专属工具<br>Github·Kuromimiyi316，盗名必究</div>
+</div>
+<canvas id="imageCanvas"></canvas>
+
+<script>
+// 从同目录加载logo.jpg
+const logoImg = new Image();
+logoImg.src = 'logo.jpg';
+
+function g(id){ return document.getElementById(id).value.trim(); }
+function s(id,v){ document.getElementById(id).value = v; }
+let data = null;
+
+function gen(){
+  const n=g('tNumber')||'VIP520', d=g('tDate')||'2026.2.5', b=g('tBoss')||'署名';
+  const p=Math.max(1,parseInt(g('tPeople'))||1), pr=g('tProject')||'项目名称';
+  const nt=g('tNote')||'痛将有时 爱必将至';
+  let amt=g('tAmount')||'0.00';
+  amt=amt.replace(/[￥¥元]/g,'').trim();
+  const num=parseFloat(amt); amt=isNaN(num)?amt:num.toFixed(2);
+  const players=(g('tPlayer')||'陪陪名').split(/[\s,，]+/).filter(x=>x);
+  data={n,d,b,p,pr,nt,amt,players:[]};
+  let pl='';
+  for(let i=0;i<p;i++){ const pn=players[i]||players[players.length-1]||'陪陪名'; data.players.push(pn); pl+=`                          -ᴘʟᴀʏᴇʀ [${pn}]\n`; }
+  document.getElementById('tOutput').textContent=`⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯\n                  𝑳𝒆𝒂𝒗𝒆 𝒕𝒉𝒆 𝒕𝒂𝒃𝒍𝒆 𝒍𝒊𝒔𝒕\n\n编号：${n}\n时间：${d}  \n板宝：${b}                      人数：${p}\n\n品类                                     选手\n⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯\nᴘᴇᴏᴊᴇᴄᴛ | [${pr}]\n${pl}\n\n备注：${nt}\n\n                     账单合计：￥ ${amt}\n⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯\n          𝗧𝗔𝗦𝗧𝗘 𝗧𝗛𝗘 𝗠𝗢𝗠𝗘𝗡𝗧\n                 𝕏𝕐𝕏 ℂ𝕃𝕌𝔹\n⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯`;
+}
+
+function clearForm(){ 'tNumber,tDate,tBoss,tPeople,tProject,tPlayer,tNote,tAmount'.split(',').forEach(id=>s(id,'')); document.getElementById('tOutput').innerHTML='<span class="placeholder-note">尚未生成小票</span>'; data=null; }
+
+async function copyText(){
+  const el=document.getElementById('tOutput'); const t=el.textContent||'';
+  if(!t.trim()||el.querySelector('.placeholder-note')){alert('请先生成小票');return;}
+  try{await navigator.clipboard.writeText(t);alert('✅ 文本已复制');}catch(e){alert('复制失败，请手动选择');}
+}
+
+async function copyImg(){
+  if(!data){alert('请先生成小票');return;}
+  const canvas=document.getElementById('imageCanvas'),ctx=canvas.getContext('2d');
+  const ratio=240/253,scale=3,baseW=240;
+  const extraPlayers=Math.max(0,data.players.length-1);
+  const logoH=(logoImg.complete&&logoImg.naturalWidth>0)?Math.round(36*ratio):0;
+  const baseH=390+extraPlayers*Math.round(16*ratio)+logoH;
+  canvas.width=baseW*scale;canvas.height=baseH*scale;ctx.scale(scale,scale);
+
+  // 背景色改为与Logo一致的黑色
+  const BG='#000000';
+  const C={paper:BG,ink:'#e0d6c8',gray:'#999590',lightGray:'#555',accent:'#e06050',darkAccent:'#e0a088'};
+  const LM=Math.round(16*ratio),RM=Math.round(16*ratio),LH=Math.round(16*ratio),BW=baseW;
+  ctx.fillStyle=BG;ctx.fillRect(0,0,BW,baseH);
+  function dt(t,x,y,o={}){
+    const {s=12,f="'Courier New',monospace",c=C.ink,a='left',b='top',w='normal'}=o;
+    ctx.save();ctx.font=`${w} ${Math.round(s*ratio)}px ${f}`;ctx.fillStyle=c;ctx.textAlign=a;ctx.textBaseline=b;ctx.fillText(t,x,y);ctx.restore();
+  }
+  function dd(y){dt('─'.repeat(39),LM,y,{s:9,c:C.lightGray});}
+  function dkv(k,v,y,o={}){
+    const {kc=C.gray,vc=C.ink,ks=10,vs=11}=o;
+    dt(k,LM,y,{s:ks,c:kc});ctx.save();ctx.font=`${Math.round(vs*ratio)}px 'Courier New',monospace`;const vw=ctx.measureText(v).width;ctx.restore();
+    dt(v,BW-RM-vw,y,{s:vs,c:vc});
+  }
+  let y=Math.round(18*ratio);
+  dt('RECEIPT',BW/2,y,{s:17,f:"'Microsoft YaHei',sans-serif",c:'#f0e8d8',a:'center',w:'bold'});y+=Math.round(46*ratio);
+  dkv('编号：',data.n,y);y+=LH+2;dkv('时间：',data.d,y);y+=LH+2;dkv('板宝：',data.b,y);y+=LH+2;dkv('人数：',String(data.p),y,{vs:12});y+=LH+Math.round(6*ratio);
+  dd(y);y+=LH+2;
+  dt('品类',LM,y,{s:9,c:C.gray});dt('选手',BW-RM-Math.round(40*ratio),y,{s:9,c:C.gray});y+=LH+Math.round(4*ratio);
+  dt('ᴘᴇᴏᴊᴇᴄᴛ | ['+data.pr+']',LM+Math.round(6*ratio),y,{s:11,c:'#f0e8d8',w:'bold'});y+=LH+Math.round(4*ratio);
+  for(let i=0;i<data.players.length;i++){
+    const pt='-ᴘʟᴀʏᴇʀ ['+data.players[i]+']';
+    ctx.save();ctx.font=`${Math.round(10*ratio)}px "Courier New",monospace`;const tw=ctx.measureText(pt).width;ctx.restore();
+    dt(pt,BW-RM-tw,y,{s:10,c:'#d0c8b8'});y+=LH+2;
+  }
+  y+=Math.round(6*ratio);
+  dt('备注：'+data.nt,LM,y,{s:10,c:C.accent,w:'bold'});y+=LH+Math.round(6*ratio);
+  dd(y);y+=LH+Math.round(6*ratio);
+  dt('账单合计：',LM,y,{s:12,c:C.ink,w:'bold'});
+  const amt='¥ '+data.amt;
+  ctx.save();ctx.font=`bold ${Math.round(18*ratio)}px "Courier New",monospace`;const aw=ctx.measureText(amt).width;ctx.restore();
+  dt(amt,BW-RM-aw,y-Math.round(2*ratio),{s:18,c:C.darkAccent,w:'bold'});y+=Math.round(36*ratio);
+  dt('• • • • • •',BW/2,y,{s:8,c:C.lightGray,a:'center'});y+=Math.round(20*ratio);
+  dt('TASTE THE MOMENT',BW/2,y,{s:11,f:"'Arial Black',sans-serif",c:'#f0e8d8',a:'center',w:'900'});y+=Math.round(22*ratio);
+  dt('XYX CLUB',BW/2,y,{s:10,f:"'Arial',sans-serif",c:C.gray,a:'center',w:'600'});y+=Math.round(14*ratio);
+  dt('~ 感谢光临 ~',BW/2,y,{s:8,c:C.lightGray,a:'center'});y+=Math.round(10*ratio);
+  if(logoImg.complete&&logoImg.naturalWidth>0){ctx.drawImage(logoImg,BW/2-Math.round(25*ratio),y,Math.round(50*ratio),Math.round(36*ratio));}
+  for(let i=0;i<400;i++){ctx.fillStyle=`rgba(255,255,255,${Math.random()*0.02})`;ctx.fillRect(Math.random()*BW,Math.random()*baseH,Math.random()*1.5,Math.random()*1.5);}
+  canvas.toBlob(async(blob)=>{
+    try{await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);alert('✅ 图片已复制到剪贴板');}
+    catch(e){const link=document.createElement('a');link.download='结单小票.png';link.href=canvas.toDataURL('image/png');link.click();alert('已自动下载图片');}
+  });
+}
+</script>
+</body>
+</html>
