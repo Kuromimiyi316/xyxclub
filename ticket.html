@@ -44,7 +44,7 @@
     .top-stars span { background: #222; color: #fff; padding: 0 12px; border-radius: 30px; font-size: 14px; font-weight: 600; }
     .top-stars .star-mid { background: transparent; color: #111; font-size: 20px; padding: 0; }
     .vip-header { text-align: center; border-bottom: 2px dashed #888; padding-bottom: 12px; margin-bottom: 10px; }
-    .logo-area img { display: block; width: 90px; margin: 0 auto; }
+    .logo-area img { display: block; width: 130px; margin: 0 auto; }
     .vip-header .sub-title { font-size: 14px; color: #222; background: #e0e0e0; display: inline-block; padding: 2px 16px; border-radius: 30px; margin-top: 6px; font-weight: 700; border: 1px solid #aaa; }
     .vip-header .welcome { font-size: 15px; margin-top: 6px; color: #1a1a1a; font-weight: 500; border-top: 1px dotted #999; padding-top: 8px; }
     .staff-member { display: flex; justify-content: space-between; font-size: 15px; padding: 6px; border-bottom: 1px dashed #999; margin-bottom: 8px; background: #f2f2f2; border-radius: 4px; }
@@ -83,6 +83,12 @@
     .footer-note { font-size: 0.7rem; color: #999; text-align: center; line-height: 1.5; margin-top: 0.5rem; }
     hr { border: 0.5px solid #ddd; margin: 1.2rem 0; }
     .hint-text { font-size: 0.65rem; color: #999; margin-top: 0.1rem; }
+    .payment-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; padding: 0.5rem 0; border-top: 1px dashed #ccc; }
+    .payment-row span { font-size: 0.82rem; font-weight: 600; color: #444; font-family: 'Courier New', monospace; }
+    .payment-row .pay-option { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; font-size: 0.8rem; font-family: 'Courier New', monospace; padding: 0.3rem 0.8rem; border-radius: 1rem; border: 1px solid #ccc; background: #fefefe; }
+    .payment-row .pay-option.selected { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .payment-row .pay-option input { display: none; }
+    .payment-info { font-size: 0.75rem; color: #555; margin-top: 0.3rem; font-family: 'Courier New', monospace; }
   </style>
 </head>
 <body>
@@ -95,6 +101,12 @@
       <div class="input-group"><label>👤 会员</label><input id="tMember" placeholder="例如：兔子宝宝🐰"></div>
     </div>
     <div class="input-group"><label>💰 折扣</label><input id="tDiscount" placeholder="留空=原价"><span class="hint-text">留空或填10表示原价，填8表示8折</span></div>
+    <div class="payment-row">
+      <span>💳 结算方式：</span>
+      <label class="pay-option selected" onclick="selectPayment('微信支付',this)">微信支付</label>
+      <label class="pay-option" onclick="selectPayment('支付宝支付',this)">支付宝支付</label>
+      <label class="pay-option" onclick="selectPayment('扣会员卡',this)">扣会员卡</label>
+    </div>
     <div class="rows-container" id="rowsContainer"></div>
     <span class="add-row-btn" onclick="addRow()">+ 添加一行</span>
   </div>
@@ -114,13 +126,22 @@
 
 <script>
 const logoImg=new Image();logoImg.src='logo.jpg';
-logoImg.onerror=function(){this.src='https://s3.bmp.ovh/2026/07/31/BXOkPlxv.png';};
+logoImg.onerror=function(){this.src='https://s3.bmp.ovh/2026/08/03/ekapaIMh.jpg';};
 let pinyinReady=false;
 const script=document.createElement('script');script.src='https://unpkg.com/pinyin-pro@3.18.2/dist/index.js';script.onload=function(){pinyinReady=true;};document.head.appendChild(script);
 const pm={'晚':'Wan','兔':'Tu','子':'Zi','小':'Xiao','优':'You','安':'An','然':'Ran','乐':'Le','天':'Tian','明':'Ming','花':'Hua','月':'Yue','星':'Xing','雨':'Yu','雪':'Xue','风':'Feng','云':'Yun','龙':'Long','王':'Wang','李':'Li','张':'Zhang','刘':'Liu','陈':'Chen','杨':'Yang','赵':'Zhao','周':'Zhou','吴':'Wu','徐':'Xu','孙':'Sun','马':'Ma','朱':'Zhu','胡':'Hu','郭':'Guo','何':'He','高':'Gao','林':'Lin','罗':'Luo','郑':'Zheng','梁':'Liang','谢':'Xie','宋':'Song','唐':'Tang','韩':'Han','曹':'Cao','许':'Xu','邓':'Deng','冯':'Feng','曾':'Zeng','程':'Cheng','蔡':'Cai','彭':'Peng','潘':'Pan','袁':'Yuan','于':'Yu','董':'Dong','余':'Yu','苏':'Su','叶':'Ye','魏':'Wei','蒋':'Jiang','田':'Tian','杜':'Du','丁':'Ding','沈':'Shen','姜':'Jiang','范':'Fan','江':'Jiang','傅':'Fu','钟':'Zhong','卢':'Lu','汪':'Wang','戴':'Dai','崔':'Cui','任':'Ren','陆':'Lu','廖':'Liao','姚':'Yao','方':'Fang','金':'Jin','夏':'Xia','谭':'Tan','韦':'Wei','贾':'Jia','邹':'Zou','石':'Shi','熊':'Xiong','孟':'Meng','秦':'Qin','薛':'Xue','侯':'Hou','雷':'Lei','白':'Bai','段':'Duan','郝':'Hao','孔':'Kong','邵':'Shao','史':'Shi','毛':'Mao','常':'Chang','万':'Wan','顾':'Gu','武':'Wu','康':'Kang','贺':'He','严':'Yan','钱':'Qian','施':'Shi','牛':'Niu','洪':'Hong','爱':'Ai','甜':'Tian','美':'Mei','丽':'Li','文':'Wen','静':'Jing','雅':'Ya','思':'Si','梦':'Meng','晓':'Xiao','婉':'Wan','婷':'Ting','嘉':'Jia','欣':'Xin','怡':'Yi','洁':'Jie','琳':'Lin','瑶':'Yao','倩':'Qian','慧':'Hui','敏':'Min','芳':'Fang','燕':'Yan','萍':'Ping','丹':'Dan','秀':'Xiu','娟':'Juan','莉':'Li','莎':'Sha','菲':'Fei','露':'Lu','晨':'Chen','曦':'Xi','彤':'Tong','萱':'Xuan','若':'Ruo','娜':'Na','玲':'Ling','珍':'Zhen','帅':'Shuai','杰':'Jie','伟':'Wei','强':'Qiang','涛':'Tao','斌':'Bin','超':'Chao','峰':'Feng','辉':'Hui','毅':'Yi','俊':'Jun','翔':'Xiang','宝':'Bao','贝':'Bei','欢':'Huan','喜':'Xi','福':'Fu','贵':'Gui','瑞':'Rui','吉':'Ji','旺':'Wang','财':'Cai','富':'Fu','顺':'Shun','利':'Li','平':'Ping','健':'Jian','幸':'Xing','运':'Yun','好':'Hao'};
 function toEnglish(n){if(!n||!n.trim())return'Member';if(pinyinReady&&window.pinyinPro){try{return window.pinyinPro.pinyin(n,{toneType:'none',type:'array'}).join('');}catch(e){}}let r='';for(let c of n){if(/[\u4e00-\u9fff]/.test(c)){r+=pm[c]||c;}else{r+=c;}}return r||n;}
 function g(id){return document.getElementById(id).value.trim();}
 function s(id,v){document.getElementById(id).value=v;}
+
+// 结算方式
+let paymentMethod='微信支付';
+function selectPayment(method,el){
+  paymentMethod=method;
+  document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
 function createRowHTML(i){return`<div class="row-item" data-row="${i}"><div class="input-group"><label>点单类型</label><input class="row-type" placeholder="例如：PC体验"></div><div class="input-group small"><label>陪陪数</label><select class="player-count"><option value="1">1人</option><option value="2">2人</option></select></div><div class="input-group"><label>陪陪1</label><input class="row-player1" placeholder="例如：小优"></div><div class="input-group player2-group" style="display:none;"><label>陪陪2</label><input class="row-player2" placeholder="例如：mia"></div><div class="input-group small"><label>数量</label><input class="row-qty" type="number" min="1" placeholder="1" value="1"></div><div class="input-group small"><label>价格</label><input class="row-price" placeholder="50"></div><button class="remove-row-btn" onclick="removeRow(this)" style="display:${i===0?'none':'inline'}">✕</button></div>`;}
 function addRow(){const c=document.getElementById('rowsContainer');const n=c.querySelectorAll('.row-item').length;const d=document.createElement('div');d.innerHTML=createRowHTML(n);const r=d.firstElementChild;c.appendChild(r);r.querySelector('.player-count').addEventListener('change',function(){togglePlayer2(this);});updateRemoveButtons();}
 function togglePlayer2(s){const r=s.closest('.row-item');r.querySelector('.player2-group').style.display=s.value==='2'?'':'none';if(s.value!=='2')r.querySelector('.row-player2').value='';}
@@ -130,12 +151,14 @@ function getRowsData(){const a=[];document.querySelectorAll('#rowsContainer .row
 let currentData=null;
 function goToPreview(){
   const staff=g('tStaff')||'晚晚',member=g('tMember')||'兔子',discountRaw=g('tDiscount'),discount=discountRaw?Math.min(100,Math.max(1,parseInt(discountRaw)||10)):10;
-  const rows=getRowsData();const signature=toEnglish(member),now=new Date(),timeStr=`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}  ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} PM`;
+  const rows=getRowsData();const signature=toEnglish(member),now=new Date();
+  const h=now.getHours(),ampm=h>=12?'PM':'AM',h12=h%12||12;
+  const timeStr=`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}  ${String(h12).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} ${ampm}`;
   let totalAmt=0;rows.forEach(r=>{totalAmt+=r.qty*r.price;});const finalTotal=Math.round(totalAmt*discount/10*100)/100;const showDiscount=!!discountRaw&&discount!==10;
-  currentData={staff,member,discount,rows,totalAmt,finalTotal,signature,timeStr,showDiscount};
+  currentData={staff,member,discount,rows,totalAmt,finalTotal,signature,timeStr,showDiscount,paymentMethod};
   let tableRows='',rn=0;rows.forEach(r=>{rn++;if(r.count===1){tableRows+=`<tr><td class="c1"><span class="num">#${String(rn).padStart(2,'0')}</span><span class="name">${r.type}</span></td><td class="c2">${r.player1}</td><td class="c3">${r.qty}</td><td class="c4">¥ ${r.price.toFixed(0)}</td></tr>`;}else{tableRows+=`<tr><td class="c1" rowspan="2"><span class="num">#${String(rn).padStart(2,'0')}</span><span class="name">${r.type}</span></td><td class="c2">${r.player1}</td><td class="c3" rowspan="2">${r.qty}</td><td class="c4" rowspan="2">¥ ${r.price.toFixed(0)}</td></tr><tr><td class="c2">${r.player2||'陪陪2'}</td></tr>`;}});
   const discountHTML=showDiscount?`<div class="discount-area"><span class="discount-label">实付 ${discount}折</span><span class="final-price">¥ ${finalTotal.toFixed(0)}</span></div>`:'';
-  document.getElementById('ticketPreview').innerHTML=`<div class="top-stars"><span>★ ★</span><span class="star-mid">✦ ✦</span><span>★ ★</span></div><div class="vip-header"><div class="logo-area"><img src="${logoImg.src}" alt="Logo" id="previewLogoImg"></div><div class="sub-title">★ 幸运星俱乐部专属结单小票 ★</div><div class="welcome">WELCOME TO THE XYX CLUB</div></div><div class="staff-member"><span>🧾 接待/派单：<span class="highlight">${staff}</span></span><span>👤 会员：<span class="highlight">${member}</span></span></div><div class="thankyou-row">×××感谢宝宝对幸运星的支持与喜爱×××</div><div class="timestamp">⏱ ${timeStr}</div><table class="table-receipt"><thead><tr><th>点单类型</th><th>陪陪</th><th>数量</th><th>价格</th></tr></thead><tbody>${tableRows}</tbody></table><hr class="divider-dash"><div class="total-area"><div class="total-line"><span>合计</span><span class="total-amount">¥ ${totalAmt.toFixed(0)}</span></div></div>${discountHTML}<div class="signature-area"><span class="sign-label">会员签名：</span><span class="sign-line">${signature}</span></div><div class="footer-loading"><span>您的小票正在加载中 <span class="static-dots">...</span></span><span class="ding">叮！小票出炉啦！</span></div><div class="footer-message">Hope to see you next time</div>`;
+  document.getElementById('ticketPreview').innerHTML=`<div class="top-stars"><span>★ ★</span><span class="star-mid">✦ ✦</span><span>★ ★</span></div><div class="vip-header"><div class="logo-area"><img src="${logoImg.src}" alt="Logo" id="previewLogoImg"></div><div class="sub-title">★ 幸运星俱乐部专属结单小票 ★</div><div class="welcome">WELCOME TO THE XYX CLUB</div></div><div class="staff-member"><span>🧾 接待/派单：<span class="highlight">${staff}</span></span><span>👤 会员：<span class="highlight">${member}</span></span></div><div class="thankyou-row">×××感谢宝宝对幸运星的支持与喜爱×××</div><div class="timestamp">⏱ ${timeStr}  💳 ${paymentMethod}</div><table class="table-receipt"><thead><tr><th>点单类型</th><th>陪陪</th><th>数量</th><th>价格</th></tr></thead><tbody>${tableRows}</tbody></table><hr class="divider-dash"><div class="total-area"><div class="total-line"><span>合计</span><span class="total-amount">¥ ${totalAmt.toFixed(0)}</span></div></div>${discountHTML}<div class="signature-area"><span class="sign-label">会员签名：</span><span class="sign-line">${signature}</span></div><div class="footer-loading"><span>您的小票正在加载中 <span class="static-dots">...</span></span><span class="ding">叮！小票出炉啦！</span></div><div class="footer-message">Hope to see you next time</div>`;
   document.getElementById('inputPanel').classList.add('hidden');document.getElementById('previewPanel').classList.add('show');window.scrollTo(0,0);
 }
 function goBackToInput(){document.getElementById('previewPanel').classList.remove('show');document.getElementById('inputPanel').classList.remove('hidden');window.scrollTo(0,0);}
@@ -150,8 +173,8 @@ async function copyAsImage(){
   const finalCanvas=document.createElement('canvas');
   finalCanvas.width=screenshotCanvas.width;finalCanvas.height=screenshotCanvas.height;
   const ctx=finalCanvas.getContext('2d');ctx.drawImage(screenshotCanvas,0,0);
-  // Logo下移2格：180→190
-  if(logoImg.complete&&logoImg.naturalWidth>0){const nr=logoImg.naturalWidth/logoImg.naturalHeight;const lh=144;const lw=Math.round(lh*nr);ctx.drawImage(logoImg,(finalCanvas.width-lw)/2,190,lw,lh);}
+  // Logo尺寸加大：lh=200
+  if(logoImg.complete&&logoImg.naturalWidth>0){const nr=logoImg.naturalWidth/logoImg.naturalHeight;const lh=200;const lw=Math.round(lh*nr);ctx.drawImage(logoImg,(finalCanvas.width-lw)/2,190,lw,lh);}
   finalCanvas.toBlob(function(blob){try{navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(function(){alert('✅ 图片已复制到剪贴板');}).catch(function(){const a=document.createElement('a');a.download='结单小票.png';a.href=finalCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');});}catch(e){const a=document.createElement('a');a.download='结单小票.png';a.href=finalCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');}},'image/png');
 }
 function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
