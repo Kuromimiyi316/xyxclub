@@ -45,7 +45,7 @@
     .top-stars .star-mid { background: transparent; color: #111; font-size: 20px; padding: 0; }
     .vip-header { text-align: center; border-bottom: 2px dashed #888; padding-bottom: 12px; margin-bottom: 10px; }
     .logo-area img { display: block; width: 130px; margin: 0 auto; }
-    .vip-header .sub-title { font-size: 14px; color: #222; background: #e0e0e0; display: inline-block; padding: 2px 16px; border-radius: 30px; margin-top: 6px; font-weight: 700; border: 1px solid #aaa; }
+    .vip-header .sub-title { font-size: 14px; color: #222; background: #e0e0e0; display: inline-block; padding: 2px 16px; border-radius: 30px; margin-top: 2px; font-weight: 700; border: 1px solid #aaa; }
     .vip-header .welcome { font-size: 15px; margin-top: 6px; color: #1a1a1a; font-weight: 500; border-top: 1px dotted #999; padding-top: 8px; }
     .staff-member { display: flex; justify-content: space-between; font-size: 15px; padding: 6px; border-bottom: 1px dashed #999; margin-bottom: 8px; background: #f2f2f2; border-radius: 4px; }
     .staff-member .highlight { color: #000; font-weight: 700; }
@@ -88,7 +88,6 @@
     .payment-row .pay-option { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; font-size: 0.8rem; font-family: 'Courier New', monospace; padding: 0.3rem 0.8rem; border-radius: 1rem; border: 1px solid #ccc; background: #fefefe; }
     .payment-row .pay-option.selected { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
     .payment-row .pay-option input { display: none; }
-    .payment-info { font-size: 0.75rem; color: #555; margin-top: 0.3rem; font-family: 'Courier New', monospace; }
   </style>
 </head>
 <body>
@@ -133,15 +132,8 @@ const pm={'晚':'Wan','兔':'Tu','子':'Zi','小':'Xiao','优':'You','安':'An',
 function toEnglish(n){if(!n||!n.trim())return'Member';if(pinyinReady&&window.pinyinPro){try{return window.pinyinPro.pinyin(n,{toneType:'none',type:'array'}).join('');}catch(e){}}let r='';for(let c of n){if(/[\u4e00-\u9fff]/.test(c)){r+=pm[c]||c;}else{r+=c;}}return r||n;}
 function g(id){return document.getElementById(id).value.trim();}
 function s(id,v){document.getElementById(id).value=v;}
-
-// 结算方式
 let paymentMethod='微信支付';
-function selectPayment(method,el){
-  paymentMethod=method;
-  document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-}
-
+function selectPayment(method,el){paymentMethod=method;document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
 function createRowHTML(i){return`<div class="row-item" data-row="${i}"><div class="input-group"><label>点单类型</label><input class="row-type" placeholder="例如：PC体验"></div><div class="input-group small"><label>陪陪数</label><select class="player-count"><option value="1">1人</option><option value="2">2人</option></select></div><div class="input-group"><label>陪陪1</label><input class="row-player1" placeholder="例如：小优"></div><div class="input-group player2-group" style="display:none;"><label>陪陪2</label><input class="row-player2" placeholder="例如：mia"></div><div class="input-group small"><label>数量</label><input class="row-qty" type="number" min="1" placeholder="1" value="1"></div><div class="input-group small"><label>价格</label><input class="row-price" placeholder="50"></div><button class="remove-row-btn" onclick="removeRow(this)" style="display:${i===0?'none':'inline'}">✕</button></div>`;}
 function addRow(){const c=document.getElementById('rowsContainer');const n=c.querySelectorAll('.row-item').length;const d=document.createElement('div');d.innerHTML=createRowHTML(n);const r=d.firstElementChild;c.appendChild(r);r.querySelector('.player-count').addEventListener('change',function(){togglePlayer2(this);});updateRemoveButtons();}
 function togglePlayer2(s){const r=s.closest('.row-item');r.querySelector('.player2-group').style.display=s.value==='2'?'':'none';if(s.value!=='2')r.querySelector('.row-player2').value='';}
@@ -173,8 +165,7 @@ async function copyAsImage(){
   const finalCanvas=document.createElement('canvas');
   finalCanvas.width=screenshotCanvas.width;finalCanvas.height=screenshotCanvas.height;
   const ctx=finalCanvas.getContext('2d');ctx.drawImage(screenshotCanvas,0,0);
-  // Logo尺寸加大：lh=200
-  if(logoImg.complete&&logoImg.naturalWidth>0){const nr=logoImg.naturalWidth/logoImg.naturalHeight;const lh=200;const lw=Math.round(lh*nr);ctx.drawImage(logoImg,(finalCanvas.width-lw)/2,190,lw,lh);}
+  if(logoImg.complete&&logoImg.naturalWidth>0){const nr=logoImg.naturalWidth/logoImg.naturalHeight;const lh=200;const lw=Math.round(lh*nr);ctx.drawImage(logoImg,(finalCanvas.width-lw)/2,170,lw,lh);}
   finalCanvas.toBlob(function(blob){try{navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(function(){alert('✅ 图片已复制到剪贴板');}).catch(function(){const a=document.createElement('a');a.download='结单小票.png';a.href=finalCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');});}catch(e){const a=document.createElement('a');a.download='结单小票.png';a.href=finalCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');}},'image/png');
 }
 function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
