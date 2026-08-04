@@ -44,7 +44,7 @@
     .top-stars span { background: #222; color: #fff; padding: 0 12px; border-radius: 30px; font-size: 14px; font-weight: 600; }
     .top-stars .star-mid { background: transparent; color: #111; font-size: 20px; padding: 0; }
     .vip-header { text-align: center; border-bottom: 2px dashed #888; padding-bottom: 12px; margin-bottom: 10px; }
-    .logo-area { min-height: 30px; display: flex; justify-content: center; align-items: center; }
+    .logo-area { display: block; text-align: center; }
     .logo-area img { display: block; width: 130px; margin: 0 auto; }
     .vip-header .sub-title { font-size: 14px; color: #222; background: #e0e0e0; display: inline-block; padding: 2px 16px; border-radius: 30px; margin-top: 6px; font-weight: 700; border: 1px solid #aaa; }
     .vip-header .welcome { font-size: 15px; margin-top: 6px; color: #1a1a1a; font-weight: 500; border-top: 1px dotted #999; padding-top: 8px; }
@@ -125,8 +125,9 @@
 </div>
 
 <script>
-const logoImg=new Image();logoImg.src='logo.jpg';
-logoImg.onerror=function(){this.src='https://s3.bmp.ovh/2026/08/03/ekapaIMh.jpg';};
+// ★ 新Logo：直接使用新链接，本地logo.jpg作为备选
+const logoImg=new Image();logoImg.src='https://s3.bmp.ovh/2026/08/03/ekapaIMh.jpg';
+logoImg.onerror=function(){this.src='logo.jpg';};
 let pinyinReady=false;
 const script=document.createElement('script');script.src='https://unpkg.com/pinyin-pro@3.18.2/dist/index.js';script.onload=function(){pinyinReady=true;};document.head.appendChild(script);
 const pm={'晚':'Wan','兔':'Tu','子':'Zi','小':'Xiao','优':'You','安':'An','然':'Ran','乐':'Le','天':'Tian','明':'Ming','花':'Hua','月':'Yue','星':'Xing','雨':'Yu','雪':'Xue','风':'Feng','云':'Yun','龙':'Long','王':'Wang','李':'Li','张':'Zhang','刘':'Liu','陈':'Chen','杨':'Yang','赵':'Zhao','周':'Zhou','吴':'Wu','徐':'Xu','孙':'Sun','马':'Ma','朱':'Zhu','胡':'Hu','郭':'Guo','何':'He','高':'Gao','林':'Lin','罗':'Luo','郑':'Zheng','梁':'Liang','谢':'Xie','宋':'Song','唐':'Tang','韩':'Han','曹':'Cao','许':'Xu','邓':'Deng','冯':'Feng','曾':'Zeng','程':'Cheng','蔡':'Cai','彭':'Peng','潘':'Pan','袁':'Yuan','于':'Yu','董':'Dong','余':'Yu','苏':'Su','叶':'Ye','魏':'Wei','蒋':'Jiang','田':'Tian','杜':'Du','丁':'Ding','沈':'Shen','姜':'Jiang','范':'Fan','江':'Jiang','傅':'Fu','钟':'Zhong','卢':'Lu','汪':'Wang','戴':'Dai','崔':'Cui','任':'Ren','陆':'Lu','廖':'Liao','姚':'Yao','方':'Fang','金':'Jin','夏':'Xia','谭':'Tan','韦':'Wei','贾':'Jia','邹':'Zou','石':'Shi','熊':'Xiong','孟':'Meng','秦':'Qin','薛':'Xue','侯':'Hou','雷':'Lei','白':'Bai','段':'Duan','郝':'Hao','孔':'Kong','邵':'Shao','史':'Shi','毛':'Mao','常':'Chang','万':'Wan','顾':'Gu','武':'Wu','康':'Kang','贺':'He','严':'Yan','钱':'Qian','施':'Shi','牛':'Niu','洪':'Hong','爱':'Ai','甜':'Tian','美':'Mei','丽':'Li','文':'Wen','静':'Jing','雅':'Ya','思':'Si','梦':'Meng','晓':'Xiao','婉':'Wan','婷':'Ting','嘉':'Jia','欣':'Xin','怡':'Yi','洁':'Jie','琳':'Lin','瑶':'Yao','倩':'Qian','慧':'Hui','敏':'Min','芳':'Fang','燕':'Yan','萍':'Ping','丹':'Dan','秀':'Xiu','娟':'Juan','莉':'Li','莎':'Sha','菲':'Fei','露':'Lu','晨':'Chen','曦':'Xi','彤':'Tong','萱':'Xuan','若':'Ruo','娜':'Na','玲':'Ling','珍':'Zhen','帅':'Shuai','杰':'Jie','伟':'Wei','强':'Qiang','涛':'Tao','斌':'Bin','超':'Chao','峰':'Feng','辉':'Hui','毅':'Yi','俊':'Jun','翔':'Xiang','宝':'Bao','贝':'Bei','欢':'Huan','喜':'Xi','福':'Fu','贵':'Gui','瑞':'Rui','吉':'Ji','旺':'Wang','财':'Cai','富':'Fu','顺':'Shun','利':'Li','平':'Ping','健':'Jian','幸':'Xing','运':'Yun','好':'Hao'};
@@ -160,9 +161,9 @@ async function copyAsImage(){
   const ticket=document.getElementById('ticketPreview');
   if(!ticket||!ticket.innerHTML.trim()){alert('请先生成预览');return;}
   const previewLogo=document.getElementById('previewLogoImg');
-  if(previewLogo)previewLogo.style.visibility='hidden';
+  if(previewLogo)previewLogo.style.display='none';
   const screenshotCanvas=await html2canvas(ticket,{backgroundColor:'#ffffff',scale:3,useCORS:true,allowTaint:true,logging:false});
-  if(previewLogo)previewLogo.style.visibility='visible';
+  if(previewLogo)previewLogo.style.display='block';
   const finalCanvas=document.createElement('canvas');
   finalCanvas.width=screenshotCanvas.width;finalCanvas.height=screenshotCanvas.height;
   const ctx=finalCanvas.getContext('2d');ctx.drawImage(screenshotCanvas,0,0);
