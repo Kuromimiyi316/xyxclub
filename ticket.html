@@ -120,7 +120,7 @@
 
 <div class="preview-panel" id="previewPanel">
   <div class="ticket" id="ticketPreview"></div>
-  <div class="copy-btn-preview"><button class="btn" onclick="downloadImage()">📋 复制图片</button></div>
+  <div class="copy-btn-preview"><button class="btn" id="copyBtn" onclick="copyToClipboard()">📋 复制图片</button></div>
   <div class="back-btn-preview"><button class="btn" onclick="goBackToInput()">↩ 返回修改</button></div>
 </div>
 
@@ -156,31 +156,28 @@ function goToPreview(){
 }
 function goBackToInput(){document.getElementById('previewPanel').classList.remove('show');document.getElementById('inputPanel').classList.remove('hidden');window.scrollTo(0,0);}
 
-function downloadImage(){
+async function copyToClipboard(){
   var ticket=document.getElementById('ticketPreview');
   if(!ticket||!ticket.innerHTML.trim()){alert('请先生成预览');return;}
+  var btn=document.getElementById('copyBtn');
+  btn.textContent='⏳ 生成中...';btn.disabled=true;
   var previewLogo=document.getElementById('previewLogoImg');
   if(previewLogo)previewLogo.style.display='none';
-  html2canvas(ticket,{backgroundColor:'#ffffff',scale:3,useCORS:true,allowTaint:true,logging:false}).then(function(screenshotCanvas){
+  try{
+    var screenshotCanvas=await html2canvas(ticket,{backgroundColor:'#ffffff',scale:3,useCORS:true,allowTaint:true,logging:false});
     if(previewLogo)previewLogo.style.display='block';
     var finalCanvas=document.createElement('canvas');
-    finalCanvas.width=screenshotCanvas.width;
-    finalCanvas.height=screenshotCanvas.height;
-    var ctx=finalCanvas.getContext('2d');
-    ctx.drawImage(screenshotCanvas,0,0);
-    if(logoImg.complete&&logoImg.naturalWidth>0){
-      var nr=logoImg.naturalWidth/logoImg.naturalHeight;
-      var lh=250;var lw=Math.round(lh*nr);
-      ctx.drawImage(logoImg,(finalCanvas.width-lw)/2,300,lw,lh);
-    }
-    var link=document.createElement('a');
-    link.download='结单小票.png';
-    link.href=finalCanvas.toDataURL('image/png');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    alert('✅ 图片已下载，可直接发送使用');
-  });
+    finalCanvas.width=screenshotCanvas.width;finalCanvas.height=screenshotCanvas.height;
+    var ctx=finalCanvas.getContext('2d');ctx.drawImage(screenshotCanvas,0,0);
+    if(logoImg.complete&&logoImg.naturalWidth>0){var nr=logoImg.naturalWidth/logoImg.naturalHeight;var lh=250;var lw=Math.round(lh*nr);ctx.drawImage(logoImg,(finalCanvas.width-lw)/2,300,lw,lh);}
+    var blob=await new Promise(function(resolve){finalCanvas.toBlob(function(b){resolve(b);},'image/png');});
+    await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+    alert('✅ 图片已复制到剪贴板，可直接粘贴发送');
+  }catch(e){
+    alert('复制失败，已自动下载图片');
+    var link=document.createElement('a');link.download='结单小票.png';link.href=finalCanvas.toDataURL('image/png');document.body.appendChild(link);link.click();document.body.removeChild(link);
+  }
+  btn.textContent='📋 复制图片';btn.disabled=false;
 }
 function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
 document.getElementById('rowsContainer').innerHTML=createRowHTML(0);
