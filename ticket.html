@@ -125,7 +125,6 @@
 </div>
 
 <script>
-// 新Logo
 const logoImg=new Image();logoImg.src='https://s3.bmp.ovh/2026/08/03/ekapaIMh.jpg';
 logoImg.onerror=function(){this.src='logo.jpg';};
 let pinyinReady=false;
@@ -157,18 +156,24 @@ function goToPreview(){
 }
 function goBackToInput(){document.getElementById('previewPanel').classList.remove('show');document.getElementById('inputPanel').classList.remove('hidden');window.scrollTo(0,0);}
 
-async function copyAsImage(){
+function copyAsImage(){
   const ticket=document.getElementById('ticketPreview');
   if(!ticket||!ticket.innerHTML.trim()){alert('请先生成预览');return;}
   const previewLogo=document.getElementById('previewLogoImg');
   if(previewLogo)previewLogo.style.display='none';
-  const screenshotCanvas=await html2canvas(ticket,{backgroundColor:'#ffffff',scale:3,useCORS:true,allowTaint:true,logging:false});
-  if(previewLogo)previewLogo.style.display='block';
-  const finalCanvas=document.createElement('canvas');
-  finalCanvas.width=screenshotCanvas.width;finalCanvas.height=screenshotCanvas.height;
-  const ctx=finalCanvas.getContext('2d');ctx.drawImage(screenshotCanvas,0,0);
-  if(logoImg.complete&&logoImg.naturalWidth>0){const nr=logoImg.naturalWidth/logoImg.naturalHeight;const lh=250;const lw=Math.round(lh*nr);ctx.drawImage(logoImg,(finalCanvas.width-lw)/2,300,lw,lh);}
-  finalCanvas.toBlob(function(blob){try{navigator.clipboard.write([new ClipboardItem({'image/png':blob})]).then(function(){alert('✅ 图片已复制到剪贴板');}).catch(function(){const a=document.createElement('a');a.download='结单小票.png';a.href=finalCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');});}catch(e){const a=document.createElement('a');a.download='结单小票.png';a.href=finalCanvas.toDataURL('image/png');a.click();alert('已自动下载图片');}},'image/png');
+  html2canvas(ticket,{backgroundColor:'#ffffff',scale:3,useCORS:true,allowTaint:true,logging:false}).then(function(screenshotCanvas){
+    if(previewLogo)previewLogo.style.display='block';
+    const finalCanvas=document.createElement('canvas');
+    finalCanvas.width=screenshotCanvas.width;finalCanvas.height=screenshotCanvas.height;
+    const ctx=finalCanvas.getContext('2d');ctx.drawImage(screenshotCanvas,0,0);
+    if(logoImg.complete&&logoImg.naturalWidth>0){const nr=logoImg.naturalWidth/logoImg.naturalHeight;const lh=250;const lw=Math.round(lh*nr);ctx.drawImage(logoImg,(finalCanvas.width-lw)/2,300,lw,lh);}
+    // 直接用 data URL 下载
+    const link=document.createElement('a');
+    link.download='结单小票.png';
+    link.href=finalCanvas.toDataURL('image/png');
+    link.click();
+    alert('✅ 图片已下载，可直接发送使用');
+  });
 }
 function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
 document.getElementById('rowsContainer').innerHTML=createRowHTML(0);
