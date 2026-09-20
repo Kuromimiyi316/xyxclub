@@ -84,11 +84,19 @@
     .footer-note { font-size: 0.7rem; color: #999; text-align: center; line-height: 1.5; margin-top: 0.5rem; }
     hr { border: 0.5px solid #ddd; margin: 1.2rem 0; }
     .hint-text { font-size: 0.65rem; color: #999; margin-top: 0.1rem; }
-    .payment-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; padding: 0.5rem 0; border-top: 1px dashed #ccc; }
+    .payment-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; padding: 0.5rem 0; border-top: 1px dashed #ccc; flex-wrap: wrap; }
     .payment-row span { font-size: 0.82rem; font-weight: 600; color: #444; font-family: 'Courier New', monospace; }
     .payment-row .pay-option { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; font-size: 0.8rem; font-family: 'Courier New', monospace; padding: 0.3rem 0.8rem; border-radius: 1rem; border: 1px solid #ccc; background: #fefefe; }
     .payment-row .pay-option.selected { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
     .payment-row .pay-option input { display: none; }
+    /* 会员/非会员切换 */
+    .member-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; padding: 0.5rem 0; border-top: 1px dashed #ccc; }
+    .member-row span { font-size: 0.82rem; font-weight: 600; color: #444; font-family: 'Courier New', monospace; }
+    .member-row .member-option { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; font-size: 0.8rem; font-family: 'Courier New', monospace; padding: 0.3rem 0.8rem; border-radius: 1rem; border: 1px solid #ccc; background: #fefefe; }
+    .member-row .member-option.selected { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .member-row .member-option input { display: none; }
+    .balance-input-group { display: none; margin-top: 0.5rem; }
+    .balance-input-group.show { display: flex; }
   </style>
 </head>
 <body>
@@ -100,6 +108,20 @@
       <div class="input-group"><label>🧾 接待/派单</label><input id="tStaff" placeholder="例如：晚晚"></div>
       <div class="input-group"><label>👤 会员</label><input id="tMember" placeholder="例如：兔子宝宝🐰"></div>
     </div>
+
+    <!-- 会员/非会员切换 -->
+    <div class="member-row">
+      <span>👑 类型：</span>
+      <label class="member-option selected" onclick="selectMemberType('member',this)">会员</label>
+      <label class="member-option" onclick="selectMemberType('nonmember',this)">非会员</label>
+    </div>
+
+    <!-- 卡内余额（仅会员显示） -->
+    <div class="input-group balance-input-group" id="balanceGroup">
+      <label>🏦 卡内余额</label>
+      <input id="tBalance" placeholder="例如：485" autocomplete="off">
+    </div>
+
     <div class="input-group"><label>💰 折扣</label><input id="tDiscount" placeholder="留空=原价"><span class="hint-text">留空或填10表示原价，填8表示8折</span></div>
     <div class="payment-row">
       <span>💳 结算方式：</span>
@@ -125,7 +147,6 @@
 </div>
 
 <script>
-// ★ 使用相对路径 logo.png（与HTML同一目录）
 const LOGO_URL='logo.png';
 const logoImg=new Image();logoImg.src=LOGO_URL;
 
@@ -136,25 +157,49 @@ function toEnglish(n){if(!n||!n.trim())return'Member';if(pinyinReady&&window.pin
 function g(id){return document.getElementById(id).value.trim();}
 function s(id,v){document.getElementById(id).value=v;}
 let paymentMethod='微信支付';
+let memberType='member';
 function selectPayment(method,el){paymentMethod=method;document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
-function createRowHTML(i){return`<div class="row-item" data-row="${i}"><div class="input-group"><label>点单类型</label><input class="row-type" placeholder="例如：PC体验"></div><div class="input-group small"><label>陪陪数</label><select class="player-count"><option value="1">1人</option><option value="2">2人</option></select></div><div class="input-group"><label>陪陪1</label><input class="row-player1" placeholder="例如：小优"></div><div class="input-group player2-group" style="display:none;"><label>陪陪2</label><input class="row-player2" placeholder="例如：mia"></div><div class="input-group small"><label>数量</label><input class="row-qty" type="number" min="1" placeholder="1" value="1"></div><div class="input-group small"><label>价格</label><input class="row-price" placeholder="50"></div><button class="remove-row-btn" onclick="removeRow(this)" style="display:${i===0?'none':'inline'}">✕</button></div>`;}
+function selectMemberType(type,el){
+  memberType=type;
+  document.querySelectorAll('.member-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  const balanceGroup=document.getElementById('balanceGroup');
+  if(type==='member'){balanceGroup.classList.add('show');}
+  else{balanceGroup.classList.remove('show');}
+}
+function createRowHTML(i){return`<div class="row-item" data-row="${i}"><div class="input-group"><label>点单类型</label><input class="row-type" placeholder="例如：PC体验"></div><div class="input-group small"><label>陪陪数</label><select class="player-count"><option value="1">1人</option><option value="2">2人</option></select></div><div class="input-group"><label>陪陪1</label><input class="row-player1" placeholder="例如：小优"></div><div class="input-group player2-group" style="display:none;"><label>陪陪2</label><input class="row-player2" placeholder="例如：mia"></div><div class="input-group small"><label>时长(小时)</label><input class="row-qty" type="number" step="0.1" min="0" placeholder="1.5" value="1"></div><div class="input-group small"><label>价格</label><input class="row-price" placeholder="50"></div><button class="remove-row-btn" onclick="removeRow(this)" style="display:${i===0?'none':'inline'}">✕</button></div>`;}
 function addRow(){const c=document.getElementById('rowsContainer');const n=c.querySelectorAll('.row-item').length;const d=document.createElement('div');d.innerHTML=createRowHTML(n);const r=d.firstElementChild;c.appendChild(r);r.querySelector('.player-count').addEventListener('change',function(){togglePlayer2(this);});updateRemoveButtons();}
 function togglePlayer2(s){const r=s.closest('.row-item');r.querySelector('.player2-group').style.display=s.value==='2'?'':'none';if(s.value!=='2')r.querySelector('.row-player2').value='';}
 function removeRow(b){if(document.querySelectorAll('#rowsContainer .row-item').length<=1)return;b.closest('.row-item').remove();updateRemoveButtons();}
 function updateRemoveButtons(){document.querySelectorAll('#rowsContainer .row-item').forEach(r=>{const b=r.querySelector('.remove-row-btn');if(b)b.style.display=document.querySelectorAll('#rowsContainer .row-item').length>1?'inline':'none';});}
-function getRowsData(){const a=[];document.querySelectorAll('#rowsContainer .row-item').forEach(r=>{a.push({type:r.querySelector('.row-type')?.value?.trim()||'项目',count:parseInt(r.querySelector('.player-count')?.value)||1,player1:r.querySelector('.row-player1')?.value?.trim()||'陪陪',player2:r.querySelector('.row-player2')?.value?.trim()||'',qty:parseInt(r.querySelector('.row-qty')?.value)||1,price:parseFloat(r.querySelector('.row-price')?.value?.replace(/[￥¥元]/g,''))||0});});return a;}
+function getRowsData(){const a=[];document.querySelectorAll('#rowsContainer .row-item').forEach(r=>{a.push({type:r.querySelector('.row-type')?.value?.trim()||'项目',count:parseInt(r.querySelector('.player-count')?.value)||1,player1:r.querySelector('.row-player1')?.value?.trim()||'陪陪',player2:r.querySelector('.row-player2')?.value?.trim()||'',qty:parseFloat(r.querySelector('.row-qty')?.value)||0,price:parseFloat(r.querySelector('.row-price')?.value?.replace(/[￥¥元]/g,''))||0});});return a;}
 let currentData=null;
 function goToPreview(){
-  const staff=g('tStaff')||'晚晚',member=g('tMember')||'兔子',discountRaw=g('tDiscount'),discount=discountRaw?Math.min(100,Math.max(1,parseInt(discountRaw)||10)):10;
+  const staff=g('tStaff')||'晚晚',member=g('tMember')||'兔子',balanceRaw=g('tBalance'),discountRaw=g('tDiscount'),discount=discountRaw?Math.min(100,Math.max(1,parseInt(discountRaw)||10)):10;
   const rows=getRowsData();const signature=toEnglish(member),now=new Date();
   const h=now.getHours(),ampm=h>=12?'PM':'AM',h12=h%12||12;
   const timeStr=`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}  ${String(h12).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} ${ampm}`;
   let totalAmt=0;rows.forEach(r=>{totalAmt+=r.qty*r.price;});const finalTotal=Math.round(totalAmt*discount/10*100)/100;const showDiscount=!!discountRaw&&discount!==10;
-  currentData={staff,member,discount,rows,totalAmt,finalTotal,signature,timeStr,showDiscount,paymentMethod};
+  currentData={staff,member,balance:balanceRaw,discount,rows,totalAmt,finalTotal,signature,timeStr,showDiscount,paymentMethod,memberType};
   let tableRows='',rn=0;rows.forEach(r=>{rn++;if(r.count===1){tableRows+=`<tr><td class="c1"><span class="num">#${String(rn).padStart(2,'0')}</span><span class="name">${r.type}</span></td><td class="c2">${r.player1}</td><td class="c3">${r.qty}</td><td class="c4">¥ ${r.price.toFixed(0)}</td></tr>`;}else{tableRows+=`<tr><td class="c1" rowspan="2"><span class="num">#${String(rn).padStart(2,'0')}</span><span class="name">${r.type}</span></td><td class="c2">${r.player1}</td><td class="c3" rowspan="2">${r.qty}</td><td class="c4" rowspan="2">¥ ${r.price.toFixed(0)}</td></tr><tr><td class="c2">${r.player2||'陪陪2'}</td></tr>`;}});
   const discountHTML=showDiscount?`<div class="discount-area"><span class="discount-label">实付 ${discount}折</span><span class="final-price">¥ ${finalTotal.toFixed(0)}</span></div>`:'';
-  document.getElementById('ticketPreview').innerHTML=`<div class="top-stars"><span>★ ★</span><span class="star-mid">✦ ✦</span><span>★ ★</span></div><div class="vip-header"><div class="logo-area"><img src="${LOGO_URL}" alt="Logo" id="previewLogoImg"></div><div class="sub-title">★ 幸运星俱乐部专属结单小票 ★</div><div class="welcome">WELCOME TO THE XYX CLUB</div></div><div class="staff-member"><span>🧾 接待/派单：<span class="highlight">${staff}</span></span><span>👤 会员：<span class="highlight">${member}</span></span></div><div class="thankyou-row">×××感谢宝宝对幸运星的支持与喜爱×××</div><div class="timestamp">⏱ ${timeStr}  💳 ${paymentMethod}</div><table class="table-receipt"><thead><tr><th>点单类型</th><th>陪陪</th><th>数量</th><th>价格</th></tr></thead><tbody>${tableRows}</tbody></table><hr class="divider-dash"><div class="total-area"><div class="total-line"><span>合计</span><span class="total-amount">¥ ${totalAmt.toFixed(0)}</span></div></div>${discountHTML}<div class="signature-area"><span class="sign-label">会员签名：</span><span class="sign-line">${signature}</span></div><div class="footer-loading"><span>您的小票正在加载中 <span class="static-dots">...</span></span><span class="ding">叮！小票出炉啦！</span></div><div class="footer-message">Hope to see you next time</div>`;
+  // 根据会员类型生成会员信息行
+  let memberLine='';
+  if(memberType==='member'){
+    const balanceDisplay=formatMoneyWithUnit(balanceRaw);
+    memberLine=`<div class="staff-member"><span>👤 会员：<span class="highlight">${member}</span></span><span>🏦 卡内余额：<span class="highlight">${balanceDisplay}</span></span></div>`;
+  }else{
+    memberLine=`<div class="staff-member"><span>👤 非会员：<span class="highlight">${member}</span></span></div>`;
+  }
+  document.getElementById('ticketPreview').innerHTML=`<div class="top-stars"><span>★ ★</span><span class="star-mid">✦ ✦</span><span>★ ★</span></div><div class="vip-header"><div class="logo-area"><img src="${LOGO_URL}" alt="Logo" id="previewLogoImg"></div><div class="sub-title">★ 幸运星俱乐部专属结单小票 ★</div><div class="welcome">WELCOME TO THE XYX CLUB</div></div>${memberLine}<div class="thankyou-row">×××感谢宝宝对幸运星的支持与喜爱×××</div><div class="timestamp">⏱ ${timeStr}  💳 ${paymentMethod}</div><table class="table-receipt"><thead><tr><th>点单类型</th><th>陪陪</th><th>时长(h)</th><th>价格</th></tr></thead><tbody>${tableRows}</tbody></table><hr class="divider-dash"><div class="total-area"><div class="total-line"><span>合计</span><span class="total-amount">¥ ${totalAmt.toFixed(0)}</span></div></div>${discountHTML}<div class="signature-area"><span class="sign-label">会员签名：</span><span class="sign-line">${signature}</span></div><div class="footer-loading"><span>您的小票正在加载中 <span class="static-dots">...</span></span><span class="ding">叮！小票出炉啦！</span></div><div class="footer-message">Hope to see you next time</div>`;
   document.getElementById('inputPanel').classList.add('hidden');document.getElementById('previewPanel').classList.add('show');window.scrollTo(0,0);
+}
+function formatMoneyWithUnit(raw){
+  if(!raw||!raw.trim())return'0元';
+  const t=raw.trim();
+  if(t.includes('元'))return t;
+  if(/^-?\d+(\.\d+)?$/.test(t))return t+'元';
+  return t;
 }
 function goBackToInput(){document.getElementById('previewPanel').classList.remove('show');document.getElementById('inputPanel').classList.remove('hidden');window.scrollTo(0,0);}
 
@@ -189,9 +234,21 @@ function downloadFallback(canvas,btn){
   alert('已自动下载图片');
   btn.textContent='📋 复制图片';btn.disabled=false;
 }
-function clearForm(){s('tStaff','');s('tMember','');s('tDiscount','');document.getElementById('rowsContainer').innerHTML=createRowHTML(0);document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});currentData=null;}
+function clearForm(){
+  s('tStaff','');s('tMember','');s('tBalance','');s('tDiscount','');
+  document.getElementById('rowsContainer').innerHTML=createRowHTML(0);
+  document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});
+  currentData=null;
+  // 重置会员类型
+  memberType='member';
+  document.querySelectorAll('.member-option').forEach(o=>o.classList.remove('selected'));
+  document.querySelector('.member-option').classList.add('selected');
+  document.getElementById('balanceGroup').classList.add('show');
+}
 document.getElementById('rowsContainer').innerHTML=createRowHTML(0);
 document.querySelector('#rowsContainer .player-count')?.addEventListener('change',function(){togglePlayer2(this);});
+// 初始化显示余额
+document.getElementById('balanceGroup').classList.add('show');
 </script>
 </body>
 </html>
